@@ -1,17 +1,17 @@
-import express from "express"
+import express, { Request, Response } from "express"
+import employeeRouter from "./employee_router";
+import loggerMiddleware from "./middlewares/loggerMiddleware";
 
 const server = express();
 
-server.get('/', (req, res)=> {
-    const data = "Hello World!"
-    res.status(200).send(data);
-})
+server.use(express.json());
 
+server.use(loggerMiddleware);
 
-server.get('/*', (req, res)=> {
+server.use('/employees', employeeRouter);
+
+server.all('*', (req: Request, res: Response) => {
     res.status(404).send("Not Here");
 })
 
-server.listen(3000, () => {
-    console.log("Server Works");
-});
+server.listen(3000);
