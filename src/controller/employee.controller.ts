@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import EmployeeService from "../service/employee.service";
+import { plainToInstance } from "class-transformer";
+import CreateEmployeeDto from "../dto/create-employee.dto";
+import { validate } from "class-validator";
+import HttpException from "../exceptions/http.exception";
+import ValidationException from "../exceptions/validation.exception";
 
 class EmployeeController{
     public router: Router;
@@ -36,16 +41,19 @@ class EmployeeController{
         }
     }
 
-    createEmployee = async (req: Request, res: Response) => {
-        let name = req.body.name;
-        let email = req.body.email;
-        let address = req.body.address;
-        if (!name || !email) {
-            res.status(400).send("Missing Fields");
-            return;
+    createEmployee = async (req: Request, res: Response, next) => {
+        try{
+            const {email, name, address} = req.body;
+            const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+            const errors = await validate(createEmployeeDto);
+            if(errors.length > 0){
+                throw new ValidationException(400, "Validation Errors", errors);
+            }
+            const employee = await this.employeeService.createEmployee(name, email, address);
+            res.status(201).send(employee);
+        }catch(err){
+            next(err);
         }
-        const employee = await this.employeeService.createEmployee(name, email, address);
-        res.status(201).send(employee);
     }
 
     editEmployee = async (req: Request, res: Response) => {
