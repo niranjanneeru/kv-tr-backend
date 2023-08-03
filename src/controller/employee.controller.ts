@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import EmployeeService from "../service/employee.service";
 
 class EmployeeController{
@@ -26,22 +26,25 @@ class EmployeeController{
         res.status(200).send(employees);
     }
 
-    getEmployeeById =  async (req: Request, res: Response) => {
+    getEmployeeById =  async (req: Request, res: Response, next: NextFunction) => {
         const employeeId = +req.params.id;
-        const employee = await this.employeeService.getEmployeeByID(employeeId);
-        if(employee) res.status(200).send(employee);
-        else res.status(404).send();
+        try{
+            const employee = await this.employeeService.getEmployeeByID(employeeId);
+            res.status(200).send(employee)
+        }catch (error){
+            next(error);
+        }
     }
 
     createEmployee = async (req: Request, res: Response) => {
         let name = req.body.name;
         let email = req.body.email;
+        let address = req.body.address;
         if (!name || !email) {
             res.status(400).send("Missing Fields");
             return;
         }
-        const employee = await this.employeeService.createEmployee(name, email);
-        console.log(employee);
+        const employee = await this.employeeService.createEmployee(name, email, address);
         res.status(201).send(employee);
     }
 

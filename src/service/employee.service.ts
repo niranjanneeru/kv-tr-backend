@@ -1,6 +1,8 @@
 import { DeepPartial } from "typeorm";
 import Employee from "../entity/employee.entity";
 import EmployeeRepository from "../repository/employee.repository"
+import Address from "../entity/address.entity";
+import HttpException from "../exceptions/http.exception";
 
 class EmployeeService{
     constructor(private employeeRepository: EmployeeRepository){}
@@ -10,14 +12,23 @@ class EmployeeService{
         return this.employeeRepository.findByFilter(params);
     }
 
-    getEmployeeByID(id: number): Promise<Employee | null>{
-        return this.employeeRepository.findEmployeeById(id);
+    async getEmployeeByID(id: number): Promise<Employee | null>{
+        const employee = await this.employeeRepository.findEmployeeById(id);
+        if(!employee){
+            throw new HttpException(404, "Employee not Found");
+        }
+        return employee;
     }
 
-    createEmployee(name: string, email: string) : Promise<Employee> {
+    createEmployee(name: string, email: string, address: Address) : Promise<Employee> {
         const employee = new Employee();
         employee.name = name;
         employee.email = email;
+        const newAddress = new Address();
+        newAddress.line1 = address.line1;
+        newAddress.pincode = address.pincode;
+        employee.address = newAddress;
+        
         return this.employeeRepository.createEmployee(employee);
     }
 
