@@ -15,7 +15,7 @@ class EmployeeService{
     async getEmployeeByID(id: number): Promise<Employee | null>{
         const employee = await this.employeeRepository.findEmployeeById(id);
         if(!employee){
-            throw new HttpException(404, "Employee not Found");
+            throw new HttpException(404, `Employee with id ${id} not found`);
         }
         return employee;
     }
@@ -35,7 +35,7 @@ class EmployeeService{
     editEmployee = async (id:number, params): Promise<Employee | null> => {
         const employee = await this.employeeRepository.findEmployeeById(id);
         if(!employee){
-            return null;
+            throw new HttpException(404, `Employee with id ${id} not found`);
         }
         let keys = Object.keys(params);
         keys.forEach(key => {
@@ -46,7 +46,9 @@ class EmployeeService{
 
     removeEmployee = async(id: number): Promise<Employee | null> => {
         const employee = await this.employeeRepository.findEmployeeById(id);
-        if(!employee) return null;
+        if(!employee){
+            throw new HttpException(404, `Employee with id ${id} not found`);
+        }
         return this.employeeRepository.deleteEmployee(employee);
     }
 }

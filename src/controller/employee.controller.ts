@@ -1,26 +1,27 @@
 import { NextFunction, Request, Response, Router } from "express";
 import EmployeeService from "../service/employee.service";
 import { plainToInstance } from "class-transformer";
-import CreateEmployeeDto from "../dto/create-employee.dto";
 import { validate } from "class-validator";
-import HttpException from "../exceptions/http.exception";
 import ValidationException from "../exceptions/validation.exception";
+import CreateAddressDto from "../dto/create-address.dto";
+import EditEmployeeDto from "../dto/edit-employee.dto";
+import SetEmployeeDto from "../dto/patch-employee.dto";
 
-class EmployeeController{
+class EmployeeController {
     public router: Router;
 
-    constructor(private employeeService: EmployeeService){
+    constructor(private employeeService: EmployeeService) {
         this.router = Router();
-        
+
         this.router.get("/", this.getAllEmployees);
         this.router.post("/", this.createEmployee);
         this.router.get("/:id", this.getEmployeeById);
         this.router.put("/:id", this.editEmployee);
-        this.router.patch("/:id", this.editFieldEmployee);
+        this.router.patch("/:id", this.setFieldEmployee);
         this.router.delete("/:id", this.removeEmployee);
     }
 
-    getAllEmployees =  async (req: Request, res: Response) => {
+    getAllEmployees = async (req: Request, res: Response) => {
         let params = {}
         // let nameFilter = req.query.name;
         // if(nameFilter) params['name'] = nameFilter;
@@ -31,66 +32,77 @@ class EmployeeController{
         res.status(200).send(employees);
     }
 
-    getEmployeeById =  async (req: Request, res: Response, next: NextFunction) => {
-        const employeeId = +req.params.id;
-        try{
+    getEmployeeById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const employeeId = +req.params.id;
             const employee = await this.employeeService.getEmployeeByID(employeeId);
-            res.status(200).send(employee)
-        }catch (error){
+            res.status(200).send(employee);
+        } catch (error) {
             next(error);
         }
     }
 
     createEmployee = async (req: Request, res: Response, next) => {
-        try{
-            const {email, name, address} = req.body;
-            const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
+        try {
+            const { email, name, address } = req.body;
+            const createEmployeeDto = plainToInstance(CreateAddressDto, req.body);
             const errors = await validate(createEmployeeDto);
-            if(errors.length > 0){
+            if (errors.length > 0) {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
             const employee = await this.employeeService.createEmployee(name, email, address);
             res.status(201).send(employee);
-        }catch(err){
+        } catch (err) {
             next(err);
         }
     }
 
-    editEmployee = async (req: Request, res: Response) => {
+    editEmployee = async (req: Request, res: Response, next: NextFunction) => {
         let employeeId = +req.params.id;
-        let name = req.body.name;
-        let email = req.body.email;
-        if (!name || !email) {
-            res.status(400).send("Missing Fields");
-            return;
+        try {
+            const { name, email, address } = req.body;
+            const editEmployeeDto = plainToInstance(EditEmployeeDto, req.body);
+            const errors = await validate(editEmployeeDto);
+            if (errors.length > 0) {
+                throw new ValidationException(400, "Validation Errors", errors);
+            }
+            let params = { 'name': name, 'email': email, address: address };
+            const employee = await this.employeeService.editEmployee(employeeId, params);
+            res.status(200).send(employee);
+        } catch (err) {
+            next(err);
         }
-        let params = {'name':name, 'email': email}
-        const employee = await this.employeeService.editEmployee(employeeId, params);
-        if(employee) res.status(200).send(employee);
-        else res.status(404).send();
     }
 
-    editFieldEmployee =async (req: Request, res: Response) => {
+    setFieldEmployee = async (req: Request, res: Response, next: NextFunction) => {
         let employeeId = +req.params.id;
-        let name = req.body.name;
-        let email = req.body.email;
-        if (!name && !email) {
-            res.status(400).send("Missing Fields");
-            return;
+        try {
+            const { name, email, address } = req.body;
+            console.log(name, email, address)
+            const setEmployeeDto = plainToInstance(SetEmployeeDto, req.body);
+            const errors = await validate(setEmployeeDto, { skipMissingProperties: true });
+            if (errors.length > 0) {
+                throw new ValidationException(400, "Validation Errors", errors);
+            }
+            let params = {}
+            if (name) params['name'] = name;
+            if (email) params['email'] = email;
+            if (address) params['address'] = address;
+            const employee = await this.employeeService.editEmployee(employeeId, params);
+            res.status(200).send(employee);
+        } catch (err) {
+            next(err);
         }
-        let params= {}
-        if(name) params['name'] = name
-        if(email) params['email'] = email
-        const employee = await this.employeeService.editEmployee(employeeId, params);
-        if(employee) res.status(200).send(employee);
-        else res.status(404).send();
     }
 
-    removeEmployee =async (req: Request, res: Response) => {
+    removeEmployee = async (req: Request, res: Response, next: NextFunction) => {
         let employeeId = +req.params.id;
-        const employee = await this.employeeService.removeEmployee(employeeId);
-        if(employee) res.status(204).send()
-        else res.status(404).send();
+        try {
+            const employee = await this.employeeService.removeEmployee(employeeId);
+            res.status(204).send();
+        } catch (err) {
+            next(err);
+        }
     }
 }
 

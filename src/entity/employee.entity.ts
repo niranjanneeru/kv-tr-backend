@@ -1,32 +1,33 @@
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm'
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import Address from './address.entity';
+import Department from './department.entity';
 
 @Entity()
-export default class Employee{
+export default class Employee {
 
     @PrimaryGeneratedColumn()
-    id:number;
-    
-    @Column()
-    name:string;
+    id: number;
 
-    @Column({nullable : true})
-    age: number;
+    @Column()
+    name: string;
 
     @Column()
     email: string;
-    
+
     @CreateDateColumn()
-    createdAt:Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAt:Date;
+    updatedAt: Date;
 
     @DeleteDateColumn()
-    deletedAt:Date;
+    deletedAt: Date;
 
     @OneToOne(() => Address, (address) => address.employee, {
         cascade: true
     })
     address: Address
+
+    @ManyToOne(() => Department, (deparment) => deparment.employees)
+    department: Department;
 }

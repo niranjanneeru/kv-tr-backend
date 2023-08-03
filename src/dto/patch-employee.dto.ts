@@ -1,9 +1,9 @@
-import { IsEmail, IsEmpty, IsNotEmpty, IsNumber, IsObject, IsPositive, IsString, ValidateNested } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, ValidateNested } from "class-validator";
 import Address from "../entity/address.entity";
 import { Type } from "class-transformer";
-import CreateAddressDto from "./create-address.dto";
+import SetAddressDto from "./patch-address.dto";
 
-class CreateEmployeeDto{
+class SetEmployeeDto{
     
     @IsNotEmpty()
     @IsString()
@@ -17,8 +17,8 @@ class CreateEmployeeDto{
     @ValidateNested({
         each: true
     })
-    @Type(()=>CreateAddressDto)
+    @Type(()=>SetAddressDto)
     address: Address
 }
 
-export default CreateEmployeeDto;
+export default SetEmployeeDto;
