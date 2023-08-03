@@ -4,7 +4,7 @@ import dataSource from "./db/postgres.db";
 import loggerMiddleware from "./middlewares/logger.middleware";
 import employeeRoute from "./route/employee.route";
 import HttpException from "./exceptions/http.exception";
-import e from "express";
+import errorMiddleware from "./middlewares/error.middleware";
 
 const server = express();
 
@@ -18,17 +18,6 @@ server.all('*', (req: Request, res: Response) => {
     res.status(404).send("Not Here");
 });
 
-server.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-    console.log(error);
-    if(error instanceof HttpException){
-        res.status(error.status).send({error: error.message});
-        return;
-    }
-    res.status(500).send({error: error.message});
-    
-});
+server.use(errorMiddleware);
 
-(async () => {
-    await dataSource.initialize();
-    server.listen(3000);
-})();
+(async () => { await dataSource.initialize(); server.listen(3000);})();
