@@ -6,7 +6,10 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "npm run build && node dist/app.js",
-        "build": "rm -rf dist && npx tsc"
+        "build": "rm -rf dist && npx tsc",
+        "migrations:generate": "npm run build && npx typeorm migration:generate -d dist/db/postgres.db.js",
+        "migrations:run": "npm run build && npx typeorm migration:run -d dist/db/postgres.db.js",
+        "migrations:revert": "npm run build && npx typeorm migration:revert -d dist/db/postgres.db.js"
     },
     "author": "",
     "license": "ISC",

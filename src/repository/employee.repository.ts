@@ -26,6 +26,13 @@ class EmployeeRepository{
     deleteEmployee(employee: Employee): Employee | PromiseLike<Employee> {
         return this.repository.softRemove(employee);
     }
+
+    findByFilter(params: any[]): Promise<Employee[]> {
+        return this.repository.createQueryBuilder()
+        .where('name LIKE :name', {name:`${params[0] || ""}%`})
+        .andWhere('email LIKE :email', {email: `%${params[1] || ""}%`})
+        .getMany()
+    }
 }
 
 

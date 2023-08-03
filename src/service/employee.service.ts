@@ -5,8 +5,9 @@ import EmployeeRepository from "../repository/employee.repository"
 class EmployeeService{
     constructor(private employeeRepository: EmployeeRepository){}
 
-    getAllEmployees(...args): Promise<Employee[]> {
-        if(args.length === 0) return this.employeeRepository.find();
+    getAllEmployees(params): Promise<Employee[]> {
+        if(Object.keys(params).length === 0) return this.employeeRepository.find();
+        return this.employeeRepository.findByFilter(params);
     }
 
     getEmployeeByID(id: number): Promise<Employee | null>{

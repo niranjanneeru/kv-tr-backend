@@ -16,9 +16,13 @@ class EmployeeController{
     }
 
     getAllEmployees =  async (req: Request, res: Response) => {
-        let nameFilter = req.query.name;
-        let emailFilter = req.query.email;
-        const employees = await this.employeeService.getAllEmployees(nameFilter, emailFilter);
+        let params = {}
+        // let nameFilter = req.query.name;
+        // if(nameFilter) params['name'] = nameFilter;
+        // let emailFilter = req.query.email;
+        // if(emailFilter) params['email'] = emailFilter;
+        // TODO
+        const employees = await this.employeeService.getAllEmployees(params);
         res.status(200).send(employees);
     }
 

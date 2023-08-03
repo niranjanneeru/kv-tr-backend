@@ -12,7 +12,8 @@ const dataSource = new DataSource({
     entities: [Employee],
     logging: true,
     namingStrategy: new SnakeNamingStrategy(),
-    synchronize: true
+    migrations: ["dist/db/migrations/*.js"]
+    // synchronize: true
 });
 
 export default dataSource;
