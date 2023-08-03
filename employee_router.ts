@@ -1,87 +1,85 @@
 import express, { Request, Response } from 'express'
 import Employee from './models/Employee';
+import dataSource from './models/dataSource';
 
 const employeeRouter = express.Router();
 
-const employees: Employee[] = [{
-        id: 1,
-        name: "NB",
-        email: "nb@nb.me",
-        createdAt: new Date(),
-        updatedAt: new Date()
-    },
-    {
-        id: 2,
-        name: "LV",
-        email: "lv@lh.me",
-        createdAt: new Date(),
-        updatedAt: new Date()
-    }]
+const employeeRepository = dataSource.getRepository(Employee);
 
-let count = employees.length;
+employeeRouter.get('/', async (req: Request, res: Response) => {
+    const nameFilter = req.query.name as string;
+    const emailFilter = req.query.email as string;
 
-employeeRouter.get('/', (req : Request, res: Response)=> {
+    const employees = await employeeRepository.createQueryBuilder()
+    .where('name LIKE :name', {name:`${nameFilter || ""}%`})
+    .andWhere('email LIKE :email', {email: `%${emailFilter || ""}%`})
+    .getMany();
+
     res.status(200).send(employees);
 });
 
-employeeRouter.get('/:id', (req: Request, res: Response)=> {
+employeeRouter.get('/:id', async (req: Request, res: Response) => {
     let employeeId = +req.params.id;
-    let employee = employees.find((employee) => employee.id === employeeId);
-    if(employee) res.status(200).send(employee);
+
+    let employee = await employeeRepository.findOneBy({ id: employeeId });
+
+    if (employee) res.status(200).send(employee);
     else res.status(404).send("No Employee Found");
 });
 
-employeeRouter.post('/', (req: Request, res:Response)=> {
-    const employee = new Employee(
-        ++count,
-        req.body.name,
-        req.body.email
-    );
-    employees.push(employee);
+employeeRouter.post('/', async (req: Request, res: Response) => {
+    if (!req.body.name || !req.body.email) {
+        res.status(400).send("Missing Fields");
+        return;
+    }
+    const employee = new Employee();
+    employee.name = req.body.name;
+    employee.email = req.body.email;
+    await employeeRepository.save(employee);
     res.status(201).send(employee);
 });
 
-employeeRouter.put('/:id', (req: Request, res:Response)=> {
+employeeRouter.put('/:id', async (req: Request, res: Response) => {
     let employeeId = +req.params.id;
-    let employee = employees.find((employee) => employee.id === employeeId);
     let name = req.body.name;
     let email = req.body.email;
-    if(!name || !email){
+    if (!name || !email) {
         res.status(400).send("Missing Fields");
         return;
     }
-    if(employee){
+    let employee = await employeeRepository.findOneBy({ id: employeeId });
+    if (employee) {
         employee.name = name;
         employee.email = email;
-        employee.updatedAt = new Date();
+        await employeeRepository.save(employee);
         res.status(204).send();
     }
     else res.status(404).send("No Employee Found");
 });
 
-employeeRouter.patch('/:id', (req: Request, res:Response)=> {
+employeeRouter.patch('/:id', async (req: Request, res: Response) => {
     let employeeId = +req.params.id;
-    let employee = employees.find((employee) => employee.id === employeeId);
     let name = req.body.name;
     let email = req.body.email;
-    if(!name && !email){
+    if (!name && !email) {
         res.status(400).send("Missing Fields");
         return;
     }
-    if(employee){
-        if(name) employee.name = name;
-        if(email) employee.email = email;
-        employee.updatedAt = new Date();
+    let employee = await employeeRepository.findOneBy({ id: employeeId });
+    if (employee) {
+        if (name) employee.name = name;
+        if (email) employee.email = email;
+        await employeeRepository.save(employee);
         res.status(204).send();
     }
     else res.status(404).send("No Employee Found");
 });
 
-employeeRouter.delete('/:id', (req: Request, res:Response)=> {
+employeeRouter.delete('/:id', async (req: Request, res: Response) => {
     let employeeId = +req.params.id;
-    let employeeIndex = employees.findIndex((employee) => employee.id === employeeId);
-    if(employeeIndex != -1) {
-        employees.splice(employeeIndex, 1);
+    let employee = await employeeRepository.findOneBy({ id: employeeId });
+    if (employee) {
+        await employeeRepository.softRemove(employee);
         res.status(204).send();
     }
     else res.status(404).send("No Employee Found");
