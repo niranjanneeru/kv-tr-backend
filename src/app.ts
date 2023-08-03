@@ -5,6 +5,7 @@ import loggerMiddleware from "./middlewares/logger.middleware";
 import employeeRoute from "./route/employee.route";
 import HttpException from "./exceptions/http.exception";
 import errorMiddleware from "./middlewares/error.middleware";
+import departmentRoute from "./route/department.route";
 
 const server = express();
 
@@ -13,6 +14,7 @@ server.use(express.json());
 server.use(loggerMiddleware);
 
 server.use('/employees', employeeRoute);
+server.use('/departments', departmentRoute);
 
 server.all('*', (req: Request, res: Response) => {
     res.status(404).send("Not Here");

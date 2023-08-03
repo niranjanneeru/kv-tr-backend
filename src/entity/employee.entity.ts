@@ -28,6 +28,8 @@ export default class Employee {
     })
     address: Address
 
-    @ManyToOne(() => Department, (deparment) => deparment.employees)
+    @ManyToOne(() => Department, (deparment) => deparment.employees, {
+        onDelete: 'CASCADE'
+    })
     department: Department;
 }

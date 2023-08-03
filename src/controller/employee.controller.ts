@@ -6,6 +6,7 @@ import ValidationException from "../exceptions/validation.exception";
 import CreateAddressDto from "../dto/create-address.dto";
 import EditEmployeeDto from "../dto/edit-employee.dto";
 import SetEmployeeDto from "../dto/patch-employee.dto";
+import CreateEmployeeDto from "../dto/create-employee.dto";
 
 class EmployeeController {
     public router: Router;
@@ -45,7 +46,7 @@ class EmployeeController {
     createEmployee = async (req: Request, res: Response, next) => {
         try {
             const { email, name, address } = req.body;
-            const createEmployeeDto = plainToInstance(CreateAddressDto, req.body);
+            const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
             const errors = await validate(createEmployeeDto);
             if (errors.length > 0) {
                 throw new ValidationException(400, "Validation Errors", errors);
@@ -66,8 +67,8 @@ class EmployeeController {
             if (errors.length > 0) {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
-            let params = { 'name': name, 'email': email, address: address };
-            const employee = await this.employeeService.editEmployee(employeeId, params);
+            let params = { 'name': name, 'email': email};
+            const employee = await this.employeeService.editEmployee(employeeId, params, address);
             res.status(200).send(employee);
         } catch (err) {
             next(err);
@@ -87,8 +88,7 @@ class EmployeeController {
             let params = {}
             if (name) params['name'] = name;
             if (email) params['email'] = email;
-            if (address) params['address'] = address;
-            const employee = await this.employeeService.editEmployee(employeeId, params);
+            const employee = await this.employeeService.editEmployee(employeeId, params, address);
             res.status(200).send(employee);
         } catch (err) {
             next(err);

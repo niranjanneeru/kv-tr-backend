@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMa
 import Employee from "./employee.entity";
 
 @Entity()
-class Department{
+class Department {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,16 +11,16 @@ class Department{
     name: string;
 
     @Column()
-    descrption: string;
+    description: string;
 
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAt:Date;
+    updatedAt: Date;
 
     @DeleteDateColumn()
-    deletedAt:Date;
+    deletedAt: Date;
 
     @OneToMany(() => Employee, (employee) => employee.department)
     employees: Employee[];
