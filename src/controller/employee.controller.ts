@@ -2,13 +2,14 @@ import { NextFunction, Request, Response, Router } from "express";
 import EmployeeService from "../service/employee.service";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import ValidationException from "../exceptions/validation.exception";
+import ValidationException from "../exception/validation.exception";
 import CreateAddressDto from "../dto/create-address.dto";
 import EditEmployeeDto from "../dto/edit-employee.dto";
 import SetEmployeeDto from "../dto/patch-employee.dto";
 import CreateEmployeeDto from "../dto/create-employee.dto";
 import LoginEmployeeDto from "../dto/login.employee.dto";
-import authenticate from "../middlewares/authenticate.middleware";
+import authenticate from "../middleware/authenticate.middleware";
+import authorize from "../middleware/authorize.middleware";
 
 class EmployeeController {
     public router: Router;
@@ -17,11 +18,11 @@ class EmployeeController {
         this.router = Router();
 
         this.router.get("/", authenticate, this.getAllEmployees);
-        this.router.post("/", authenticate, this.createEmployee);
+        this.router.post("/", authenticate, authorize, this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
         this.router.put("/:id", authenticate, this.editEmployee);
         this.router.patch("/:id", authenticate, this.setFieldEmployee);
-        this.router.delete("/:id", authenticate, this.removeEmployee);
+        this.router.delete("/:id", authenticate, authorize, this.removeEmployee);
         this.router.post("/login", this.loginEmployee);
     }
 

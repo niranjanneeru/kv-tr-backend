@@ -1,5 +1,8 @@
+import CreateDepartmentDto from "../dto/create.department.dto";
+import EditDepartmentDto from "../dto/edit.department.dto";
+import PatchDepartmentDto from "../dto/patch.department";
 import Department from "../entity/department.entity";
-import HttpException from "../exceptions/http.exception";
+import HttpException from "../exception/http.exception";
 import DepartmentRepository from "../repository/department.repository";
 
 class DepartmentService{
@@ -19,22 +22,22 @@ class DepartmentService{
         return department;
     }
 
-    createDepartment(name: string, descrption: string) : Promise<Department>{
+    createDepartment(departmentDto:CreateDepartmentDto) : Promise<Department>{
         const department = new Department();
-        department.name = name;
-        department.description = descrption;
+        department.name = departmentDto.name;
+        department.description = departmentDto.description;
 
         return this.departmentRepository.createDepartment(department);
     }
 
-    editDepartment = async(id: number, params): Promise<Department> => {
+    editDepartment = async(id: number, departmentDto: EditDepartmentDto | PatchDepartmentDto): Promise<Department> => {
         const department = await this.departmentRepository.findDepartmentById(id);
         if(!department){
             throw new HttpException(404, `Department with id ${id} not found`);
         }
-        let keys = Object.keys(params);
+        let keys = Object.getOwnPropertyNames(departmentDto);
         keys.forEach(key => {
-            department[key] = params[key];
+            department[key] = departmentDto[key];
         });
         return this.departmentRepository.updateDepartment(department);
     }

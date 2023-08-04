@@ -1,10 +1,10 @@
 import "reflect-metadata"
 import express, { NextFunction, Request, Response } from "express"
 import dataSource from "./db/postgres.db";
-import loggerMiddleware from "./middlewares/logger.middleware";
+import loggerMiddleware from "./middleware/logger.middleware";
 import employeeRoute from "./route/employee.route";
-import HttpException from "./exceptions/http.exception";
-import errorMiddleware from "./middlewares/error.middleware";
+import HttpException from "./exception/http.exception";
+import errorMiddleware from "./middleware/error.middleware";
 import departmentRoute from "./route/department.route";
 
 const server = express();

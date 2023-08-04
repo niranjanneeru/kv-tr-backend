@@ -1,6 +1,14 @@
 import { Request, Response, Router } from "express";
 import DepartmentService from "../service/department.service";
 import { NextFunction } from "express-serve-static-core";
+import { plainToInstance } from "class-transformer";
+import CreateDepartmentDto from "../dto/create.department.dto";
+import authenticate from "../middleware/authenticate.middleware";
+import { validate } from "class-validator";
+import ValidationException from "../exception/validation.exception";
+import authorize from "../middleware/authorize.middleware";
+import EditDepartmentDto from "../dto/edit.department.dto";
+import PatchDepartmentDto from "../dto/patch.department";
 
 class DepartmentController {
     public router: Router;
@@ -10,11 +18,11 @@ class DepartmentController {
         this.router = Router();
 
         this.router.get("/", this.getAllDepartments)
-        this.router.post("/", this.createDepartment);
+        this.router.post("/", authenticate, authorize, this.createDepartment);
         this.router.get("/:id", this.getDepartmentById);
-        this.router.put("/:id", this.editDepartment);
-        this.router.patch("/:id", this.setDepartment);
-        this.router.delete("/:id", this.removeDepartment);
+        this.router.put("/:id", authenticate, authorize, this.editDepartment);
+        this.router.patch("/:id", authenticate, authorize, this.setDepartment);
+        this.router.delete("/:id", authenticate, authorize, this.removeDepartment);
     }
 
     getAllDepartments = async (req: Request, res: Response) => {
@@ -34,9 +42,12 @@ class DepartmentController {
 
     createDepartment = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { name, description } = req.body
-            const department = await this.departmentService.createDepartment(name, description);
-            res.status(201).send(department);
+            const createDepartmentDto = plainToInstance(CreateDepartmentDto, req.body);
+            const errors = await validate(createDepartmentDto);
+            if (errors.length > 0) {
+                throw new ValidationException(400, "Validation Errors", errors);
+            }
+            const department = await this.departmentService.createDepartment(createDepartmentDto);
         } catch (err) {
             next(err);
         }
@@ -45,9 +56,12 @@ class DepartmentController {
     editDepartment = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const deptId = +req.params.id;
-            const { name, description } = req.body
-            let params = { 'name': name, 'descrption': description }
-            const department = await this.departmentService.editDepartment(deptId, params);
+            const editDepartmentDto = plainToInstance(EditDepartmentDto, req.body);
+            const errors = await validate(editDepartmentDto);
+            if (errors.length > 0) {
+                throw new ValidationException(400, "Validation Errors", errors);
+            }
+            const department = await this.departmentService.editDepartment(deptId, editDepartmentDto);
             res.status(200).send(department);
         } catch (err) {
             next(err);
@@ -57,11 +71,12 @@ class DepartmentController {
     setDepartment = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const deptId = +req.params.id;
-            const { name, description } = req.body
-            let params = {}
-            if (name) params['name'] = name;
-            if (description) params['description'] = description;
-            const department = await this.departmentService.editDepartment(deptId, params);
+            const patchDepartmentDto = plainToInstance(PatchDepartmentDto, req.body);
+            const errors = await validate(patchDepartmentDto, { skipMissingProperties: true });
+            if (errors.length > 0) {
+                throw new ValidationException(400, "Validation Errors", errors);
+            }
+            const department = await this.departmentService.editDepartment(deptId, patchDepartmentDto);
             res.status(200).send(department);
         } catch (err) {
             next(err);

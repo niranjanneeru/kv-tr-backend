@@ -1,10 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import RequestWithUser from "../utils/request.user";
+import jwtPayload from "../utils/jwt.payload.type";
 
-const authenticate = async(req: Request, res: Response, next: NextFunction) => {
+const authenticate = async(req: RequestWithUser, res: Response, next: NextFunction) => {
     try{
         const token = getTokenFromRequestHeader(req);
-        jwt.verify(token, "ABCDE");
+        const payload = jwt.verify(token, "ABCDE") as jwtPayload;
+        req.name = payload.name;
+        req.email = payload.email;
+        req.role = payload.role;
         next();
     }catch(err){
         next(err);

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import Employee from "../entity/employee.entity";
 import EmployeeRepository from "../repository/employee.repository"
 import Address from "../entity/address.entity";
-import HttpException from "../exceptions/http.exception";
+import HttpException from "../exception/http.exception";
 import CreateEmployeeDto from "../dto/create-employee.dto";
 import LoginEmployeeDto from '../dto/login.employee.dto';
 import jwt from 'jsonwebtoken';
@@ -11,6 +11,7 @@ import EditEmployeeDto from '../dto/edit-employee.dto';
 import { isInstance } from 'class-validator';
 import CreateAddressDto from '../dto/create-address.dto';
 import SetAddressDto from '../dto/patch-address.dto';
+import jwtPayload from '../utils/jwt.payload.type';
 
 class EmployeeService {
     constructor(private employeeRepository: EmployeeRepository) { }
@@ -28,11 +29,14 @@ class EmployeeService {
         return employee;
     }
 
+
+    // TODO: Check whether Employee Exists
     async createEmployee(employeeDta: CreateEmployeeDto): Promise<Employee> {
         const employee = new Employee();
         employee.name = employeeDta.name;
         employee.email = employeeDta.email;
         employee.password = await bcrypt.hash(employeeDta.password, 10);
+        employee.role = employeeDta.role;
 
         const newAddress = new Address();
         newAddress.line1 = employeeDta.address.line1;
@@ -49,12 +53,12 @@ class EmployeeService {
         }
         let keys = Object.getOwnPropertyNames(employeeDta);
         keys.forEach(key => {
-            if(employeeDta[key] instanceof EditAddressDto || employeeDta[key] instanceof SetAddressDto){
+            if (employeeDta[key] instanceof EditAddressDto || employeeDta[key] instanceof SetAddressDto) {
                 let keys = Object.getOwnPropertyNames(employeeDta[key]);
                 keys.forEach(k => {
                     employee[key][k] = employeeDta[key][k];
                 })
-            }else{
+            } else {
                 employee[key] = employeeDta[key];
             }
         });
@@ -79,16 +83,17 @@ class EmployeeService {
             throw new HttpException(401, 'Incorrect username or password');
         }
 
-        const payload = {
+        const payload: jwtPayload= {
             name: employee.name,
-            email: employee.email
+            email: employee.email,
+            role: employee.role
         }
 
         const token = jwt.sign(payload, "ABCDE", {
-            expiresIn: "1hr"
+            expiresIn: "100hr"
         });
 
-        return {token};
+        return { token };
     }
 }
 

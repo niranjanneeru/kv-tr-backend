@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import HttpException from "../exceptions/http.exception";
-import ValidationException from "../exceptions/validation.exception";
+import HttpException from "../exception/http.exception";
+import ValidationException from "../exception/validation.exception";
 import { JsonWebTokenError } from "jsonwebtoken";
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
