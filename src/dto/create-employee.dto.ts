@@ -18,7 +18,11 @@ class CreateEmployeeDto{
         each: true
     })
     @Type(()=>CreateAddressDto)
-    address: Address
+    address: Address;
+
+    @IsNotEmpty()
+    @IsString()
+    password: string;
 }
 
 export default CreateEmployeeDto;

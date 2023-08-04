@@ -1,27 +1,16 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm'
 import Address from './address.entity';
 import Department from './department.entity';
+import AbstractEntity from './abstract.enitiy';
 
 @Entity()
-export default class Employee {
-
-    @PrimaryGeneratedColumn()
-    id: number;
-
+@Index(["email"], { unique: true })
+export default class Employee extends AbstractEntity{
     @Column()
     name: string;
 
     @Column()
     email: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
-
-    @DeleteDateColumn()
-    deletedAt: Date;
 
     @OneToOne(() => Address, (address) => address.employee, {
         cascade: true
@@ -32,4 +21,7 @@ export default class Employee {
         onDelete: 'CASCADE'
     })
     department: Department;
+
+    @Column()
+    password: string;
 }
