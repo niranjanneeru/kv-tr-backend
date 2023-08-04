@@ -15,6 +15,7 @@ const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFu
         }
         if (error instanceof JsonWebTokenError) {
             res.status(403).send("Forbidden");
+            return;
         }
         res.status(500).send({ error: error.message });
     } catch (error) {

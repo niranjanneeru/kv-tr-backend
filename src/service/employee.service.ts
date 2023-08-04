@@ -8,6 +8,9 @@ import LoginEmployeeDto from '../dto/login.employee.dto';
 import jwt from 'jsonwebtoken';
 import EditAddressDto from '../dto/edit-address.dto';
 import EditEmployeeDto from '../dto/edit-employee.dto';
+import { isInstance } from 'class-validator';
+import CreateAddressDto from '../dto/create-address.dto';
+import SetAddressDto from '../dto/patch-address.dto';
 
 class EmployeeService {
     constructor(private employeeRepository: EmployeeRepository) { }
@@ -25,33 +28,36 @@ class EmployeeService {
         return employee;
     }
 
-    async createEmployee(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
+    async createEmployee(employeeDta: CreateEmployeeDto): Promise<Employee> {
         const employee = new Employee();
-        employee.name = createEmployeeDto.name;
-        employee.email = createEmployeeDto.email;
-        employee.password = await bcrypt.hash(createEmployeeDto.password, 10);
+        employee.name = employeeDta.name;
+        employee.email = employeeDta.email;
+        employee.password = await bcrypt.hash(employeeDta.password, 10);
 
         const newAddress = new Address();
-        newAddress.line1 = createEmployeeDto.address.line1;
-        newAddress.pincode = createEmployeeDto.address.pincode;
+        newAddress.line1 = employeeDta.address.line1;
+        newAddress.pincode = employeeDta.address.pincode;
         employee.address = newAddress;
 
         return this.employeeRepository.createEmployee(employee);
     }
 
-    editEmployee = async (id: number, editEmployeeDto: EditEmployeeDto): Promise<Employee | null> => {
+    editEmployee = async (id: number, employeeDta: EditEmployeeDto): Promise<Employee | null> => {
         const employee = await this.employeeRepository.findEmployeeById(id);
         if (!employee) {
             throw new HttpException(404, `Employee with id ${id} not found`);
         }
-        let keys = Object.getOwnPropertyNames(editEmployeeDto);
+        let keys = Object.getOwnPropertyNames(employeeDta);
         keys.forEach(key => {
-            employee[key] = editEmployeeDto[key];
+            if(employeeDta[key] instanceof EditAddressDto || employeeDta[key] instanceof SetAddressDto){
+                let keys = Object.getOwnPropertyNames(employeeDta[key]);
+                keys.forEach(k => {
+                    employee[key][k] = employeeDta[key][k];
+                })
+            }else{
+                employee[key] = employeeDta[key];
+            }
         });
-        // if (address) {
-        //     if (address.line1) employee.address.line1 = address.line1;
-        //     if (address.pincode) employee.address.pincode = address.pincode
-        // }
         return this.employeeRepository.updateEmployee(employee);
     }
 
@@ -83,8 +89,6 @@ class EmployeeService {
         });
 
         return {token};
-
-
     }
 }
 

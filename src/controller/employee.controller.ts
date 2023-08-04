@@ -78,18 +78,13 @@ class EmployeeController {
     setFieldEmployee = async (req: Request, res: Response, next: NextFunction) => {
         let employeeId = +req.params.id;
         try {
-            const { name, email, address } = req.body;
-            console.log(name, email, address)
             const setEmployeeDto = plainToInstance(SetEmployeeDto, req.body);
             const errors = await validate(setEmployeeDto, { skipMissingProperties: true });
             if (errors.length > 0) {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
-            let params = {}
-            if (name) params['name'] = name;
-            if (email) params['email'] = email;
-            // const employee = await this.employeeService.editEmployee(employeeId, params, address);
-            // res.status(200).send(employee);
+            const employee = await this.employeeService.editEmployee(employeeId, setEmployeeDto);
+            res.status(200).send(employee);
         } catch (err) {
             next(err);
         }

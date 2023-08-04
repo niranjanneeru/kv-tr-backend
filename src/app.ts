@@ -17,7 +17,7 @@ server.use('/employees', employeeRoute);
 server.use('/departments', departmentRoute);
 
 server.all('*', (req: Request, res: Response) => {
-    res.status(404).send("Not Here");
+    res.status(404).send("Not Found");
 });
 
 server.use(errorMiddleware);
