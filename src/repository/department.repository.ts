@@ -11,11 +11,11 @@ class DepartmentRepository{
         return this.repository.find();
     }
 
-    findDepartmentById(id:number): Promise<Department | null> {
+    findDepartmentById(id:number, employees = false): Promise<Department | null> {
         return this.repository.findOne({
             where : {id : id},
             relations: {
-                employees: true
+                employees
             }
         });
     }

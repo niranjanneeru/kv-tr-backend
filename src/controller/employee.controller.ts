@@ -3,13 +3,16 @@ import EmployeeService from "../service/employee.service";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import ValidationException from "../exception/validation.exception";
-import CreateAddressDto from "../dto/create-address.dto";
+import ResponseBody from "../utils/response.body";
 import EditEmployeeDto from "../dto/edit-employee.dto";
 import SetEmployeeDto from "../dto/patch-employee.dto";
 import CreateEmployeeDto from "../dto/create-employee.dto";
 import LoginEmployeeDto from "../dto/login.employee.dto";
 import authenticate from "../middleware/authenticate.middleware";
 import authorize from "../middleware/authorize.middleware";
+import { Role } from "../utils/role.enum";
+import { StatusMessages } from "../utils/status.message.enum";
+import { StatusCodes } from "../utils/status.code.enum";
 
 class EmployeeController {
     public router: Router;
@@ -18,35 +21,36 @@ class EmployeeController {
         this.router = Router();
 
         this.router.get("/", authenticate, this.getAllEmployees);
-        this.router.post("/", authenticate, authorize, this.createEmployee);
+        this.router.post("/", authenticate, authorize(Role.HR), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
         this.router.put("/:id", authenticate, this.editEmployee);
         this.router.patch("/:id", authenticate, this.setFieldEmployee);
-        this.router.delete("/:id", authenticate, authorize, this.removeEmployee);
+        this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeEmployee);
         this.router.post("/login", this.loginEmployee);
     }
 
+    // TODO Change Dept -> Dept.id
     getAllEmployees = async (req: Request, res: Response) => {
-        let params = {}
-        // let nameFilter = req.query.name;
-        // if(nameFilter) params['name'] = nameFilter;
-        // let emailFilter = req.query.email;
-        // if(emailFilter) params['email'] = emailFilter;
-        // TODO
-        const employees = await this.employeeService.getAllEmployees(params);
-        res.status(200).send(employees);
+        const employees = await this.employeeService.getAllEmployees();
+        const responseBody = new ResponseBody(employees, null, StatusMessages.OK);
+        responseBody.set_meta(employees.length);
+        res.status(StatusCodes.OK).send(responseBody);
     }
 
+    // TODO Change Dept -> Dept.id
     getEmployeeById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const employeeId = +req.params.id;
             const employee = await this.employeeService.getEmployeeByID(employeeId);
-            res.status(200).send(employee);
+            const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (error) {
             next(error);
         }
     }
 
+    // TODO Change Dept -> Dept.id
     createEmployee = async (req: Request, res: Response, next) => {
         try {
             const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
@@ -55,7 +59,9 @@ class EmployeeController {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
             const employee = await this.employeeService.createEmployee(createEmployeeDto);
-            res.status(201).send(employee);
+            const responseBody = new ResponseBody(employee, null, StatusMessages.CREATED);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.CREATED).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -70,7 +76,9 @@ class EmployeeController {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
             const employee = await this.employeeService.editEmployee(employeeId, editEmployeeDto);
-            res.status(200).send(employee);
+            const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -84,8 +92,10 @@ class EmployeeController {
             if (errors.length > 0) {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
-            const employee = await this.employeeService.editEmployee(employeeId, setEmployeeDto);
-            res.status(200).send(employee);
+            const employee = await this.employeeService.editEmployee(employeeId, setEmployeeDto as EditEmployeeDto);
+            const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -107,10 +117,12 @@ class EmployeeController {
         if (errors.length > 0) {
             throw new ValidationException(400, "Validation Errors", errors);
         }
-        try{
-            const token = await this.employeeService.loginEmployee(loginEmployeeDto);
-            res.status(200).send({ data: token });
-        }catch(err){
+        try {
+            const data = await this.employeeService.loginEmployee(loginEmployeeDto);
+            const responseBody = new ResponseBody(data, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
+        } catch (err) {
             next(err);
         }
     }

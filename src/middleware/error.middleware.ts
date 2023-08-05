@@ -4,6 +4,7 @@ import ValidationException from "../exception/validation.exception";
 import { JsonWebTokenError } from "jsonwebtoken";
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log(error);
     try {
         if (error instanceof ValidationException) {
             res.status(error.status).send({ message: error.message, errors: error.getMessage() });

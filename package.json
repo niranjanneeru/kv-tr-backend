@@ -7,11 +7,11 @@
         "test": "npm run clear && jest --verbose",
         "test-coverage": "npm run clear && jest --coverage",
         "start": "npm run build && node dist/app.js",
-        "build": "npm run clear && npx tsc",
+        "build": "npm run clear && npx tsc && cp .env dist/.env",
         "migrations:generate": "npm run build && npx typeorm migration:generate -d dist/db/postgres.db.js",
         "migrations:run": "npm run build && npx typeorm migration:run -d dist/db/postgres.db.js",
         "migrations:revert": "npm run build && npx typeorm migration:revert -d dist/db/postgres.db.js",
-        "clear" : "rm -rf dist/"
+        "clear": "rm -rf dist/ && rm -rf coverage/"
     },
     "author": "",
     "license": "ISC",
@@ -23,6 +23,7 @@
         "bcrypt": "^5.1.0",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.0",
+        "dotenv": "^16.3.1",
         "express": "^4.17.1",
         "jest-when": "^3.5.2",
         "jsonwebtoken": "^9.0.1",

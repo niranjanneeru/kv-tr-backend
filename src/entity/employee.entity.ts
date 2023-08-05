@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm'
+import { Column, Entity, Index, ManyToOne, OneToOne } from 'typeorm'
 import Address from './address.entity';
 import Department from './department.entity';
 import AbstractEntity from './abstract.enitiy';
@@ -6,7 +6,7 @@ import { Role } from '../utils/role.enum';
 
 @Entity()
 @Index(["email"], { unique: true })
-export default class Employee extends AbstractEntity{
+export default class Employee extends AbstractEntity {
     @Column()
     name: string;
 
@@ -26,6 +26,15 @@ export default class Employee extends AbstractEntity{
     @Column()
     password: string;
 
-    @Column({ default: Role.DEVELOPER})
+    @Column({ default: Role.DEVELOPER })
     role: Role;
+
+    @Column()
+    joiningDate: string;
+
+    @Column({ default: true })
+    isActive: boolean;
+
+    @Column()
+    experience: number
 }

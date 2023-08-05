@@ -9,6 +9,7 @@ import ValidationException from "../exception/validation.exception";
 import authorize from "../middleware/authorize.middleware";
 import EditDepartmentDto from "../dto/edit.department.dto";
 import PatchDepartmentDto from "../dto/patch.department";
+import { Role } from "../utils/role.enum";
 
 class DepartmentController {
     public router: Router;
@@ -18,11 +19,11 @@ class DepartmentController {
         this.router = Router();
 
         this.router.get("/", this.getAllDepartments)
-        this.router.post("/", authenticate, authorize, this.createDepartment);
+        this.router.post("/", authenticate, authorize(Role.HR), this.createDepartment);
         this.router.get("/:id", this.getDepartmentById);
-        this.router.put("/:id", authenticate, authorize, this.editDepartment);
-        this.router.patch("/:id", authenticate, authorize, this.setDepartment);
-        this.router.delete("/:id", authenticate, authorize, this.removeDepartment);
+        this.router.put("/:id", authenticate, authorize(Role.HR), this.editDepartment);
+        this.router.patch("/:id", authenticate, authorize(Role.HR), this.setDepartment);
+        this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeDepartment);
     }
 
     getAllDepartments = async (req: Request, res: Response) => {

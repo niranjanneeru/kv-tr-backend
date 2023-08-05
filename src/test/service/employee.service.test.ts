@@ -28,6 +28,14 @@ describe('Employee Service', () => {
             }).rejects.toThrow(HttpException);
         })
 
+        test('Testing Spy', async () => {
+            const spy = jest.spyOn(employeeRepository, 'find');
+            spy.mockResolvedValue([]);
+            const users = await employeeService.getAllEmployees({});
+            expect(spy).toBeCalledTimes(1);
+
+        })
+
         test('Test Employee for id 7 - Success Case', async () => {
             const mockFunction = jest.fn();
             when(mockFunction).calledWith(7).mockResolvedValue({

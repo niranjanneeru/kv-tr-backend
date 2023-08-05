@@ -14,8 +14,8 @@ class DepartmentService{
         return this.departmentRepository.find();
     }
 
-    getDepartmentById =async (id:number): Promise<Department> => {
-        const department = await this.departmentRepository.findDepartmentById(id);
+    getDepartmentById =async (id:number, employees = true): Promise<Department> => {
+        const department = await this.departmentRepository.findDepartmentById(id, employees);
         if(!department){
             throw new HttpException(404, `Department with id ${id} not found`);
         }
