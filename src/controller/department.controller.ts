@@ -10,6 +10,9 @@ import authorize from "../middleware/authorize.middleware";
 import EditDepartmentDto from "../dto/edit.department.dto";
 import PatchDepartmentDto from "../dto/patch.department";
 import { Role } from "../utils/role.enum";
+import { StatusMessages } from "../utils/status.message.enum";
+import ResponseBody from "../utils/response.body";
+import { StatusCodes } from "../utils/status.code.enum";
 
 class DepartmentController {
     public router: Router;
@@ -28,14 +31,18 @@ class DepartmentController {
 
     getAllDepartments = async (req: Request, res: Response) => {
         const departments = await this.departmentService.getAllDepartment();
-        res.status(200).send(departments);
+        const responseBody = new ResponseBody(departments, null, StatusMessages.OK);
+        responseBody.set_meta(departments.length);
+        res.status(StatusCodes.OK).send(responseBody);
     }
 
     getDepartmentById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const deptId = +req.params.id;
             const department = await this.departmentService.getDepartmentById(deptId);
-            res.status(200).send(department);
+            const responseBody = new ResponseBody(department, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -49,6 +56,9 @@ class DepartmentController {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
             const department = await this.departmentService.createDepartment(createDepartmentDto);
+            const responseBody = new ResponseBody(department, null, StatusMessages.CREATED);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.CREATED).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -63,7 +73,9 @@ class DepartmentController {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
             const department = await this.departmentService.editDepartment(deptId, editDepartmentDto);
-            res.status(200).send(department);
+            const responseBody = new ResponseBody(department, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -78,7 +90,9 @@ class DepartmentController {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
             const department = await this.departmentService.editDepartment(deptId, patchDepartmentDto);
-            res.status(200).send(department);
+            const responseBody = new ResponseBody(department, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (err) {
             next(err);
         }
@@ -88,7 +102,7 @@ class DepartmentController {
         try {
             const deptId = +req.params.id;
             const department = await this.departmentService.removeDepartment(deptId);
-            res.status(204).send();
+            res.status(StatusCodes.NO_CONTENT).send();
         } catch (err) {
             next(err);
         }

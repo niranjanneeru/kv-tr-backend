@@ -67,12 +67,16 @@ class EmployeeService {
         if (!employee) {
             throw new HttpException(404, `Employee with id ${id} not found`);
         }
+        console.log(employeeDta);
         let keys = Object.getOwnPropertyNames(employeeDta);
         for (const key of keys) {
-            if (key === 'department') {
+            if(key === 'password'){
+                
+            }
+            else if (key === 'departmentId') {
                 const department = await this.departmentService.getDepartmentById(employeeDta[key], false);
                 if (!department) {
-                    throw new HttpException(404, `Department with id ${employeeDta.department} not found`);
+                    throw new HttpException(404, `Department with id ${employeeDta.departmentId} not found`);
                 }
                 if(employee.department != department){
                     employee.department = department;

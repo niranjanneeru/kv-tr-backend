@@ -105,7 +105,7 @@ class EmployeeController {
         let employeeId = +req.params.id;
         try {
             const employee = await this.employeeService.removeEmployee(employeeId);
-            res.status(204).send();
+            res.status(StatusCodes.NO_CONTENT).send();
         } catch (err) {
             next(err);
         }

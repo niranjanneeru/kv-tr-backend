@@ -2,7 +2,7 @@ export default class ResponseBody {
     public meta: object
     constructor(
         public data: object,
-        public error: object,
+        public errors: object,
         public message: string,
     ) { }
 

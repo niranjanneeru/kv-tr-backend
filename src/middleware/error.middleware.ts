@@ -2,16 +2,21 @@ import { NextFunction, Request, Response } from "express";
 import HttpException from "../exception/http.exception";
 import ValidationException from "../exception/validation.exception";
 import { JsonWebTokenError } from "jsonwebtoken";
+import ResponseBody from "../utils/response.body";
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
     console.log(error);
     try {
         if (error instanceof ValidationException) {
-            res.status(error.status).send({ message: error.message, errors: error.getMessage() });
+            const responseBody = new ResponseBody(null, error.getMessage(), error.message);
+            responseBody.set_meta(0);
+            res.status(error.status).send(responseBody);
             return;
         }
         if (error instanceof HttpException) {
-            res.status(error.status).send({ error: error.message });
+            const responseBody = new ResponseBody(null, error.message as unknown as object, error.message);
+            responseBody.set_meta(0);
+            res.status(error.status).send(responseBody);
             return;
         }
         if (error instanceof JsonWebTokenError) {

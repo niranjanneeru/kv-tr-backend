@@ -23,10 +23,6 @@ class EditEmployeeDto{
     address: Address
 
     @IsNotEmpty()
-    @IsNumber()
-    department: number;
-
-    @IsNotEmpty()
     @IsEnum(Role)
     role : Role;
 

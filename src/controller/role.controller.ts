@@ -1,5 +1,8 @@
 import { Request, Response, Router } from "express";
 import RoleService from "../service/role.service";
+import ResponseBody from "../utils/response.body";
+import { StatusMessages } from "../utils/status.message.enum";
+import { StatusCodes } from "../utils/status.code.enum";
 
 class RoleController{
     public router: Router;
@@ -12,7 +15,9 @@ class RoleController{
 
     getAllRoles = async (req: Request, res: Response) => {
         const roles =  this.roleService.getRoles();
-        res.status(200).send(roles);
+        const responseBody = new ResponseBody(roles, null, StatusMessages.OK);
+        responseBody.set_meta(roles.length);
+        res.status(StatusCodes.OK).send(responseBody);
     }
 }
 
