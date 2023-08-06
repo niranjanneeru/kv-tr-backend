@@ -64,7 +64,7 @@ class EmployeeService {
     editEmployee = async (id: string, employeeDta: EditEmployeeDto): Promise<Employee | null> => {
         if (employeeDta.email) {
             const existingEmployee = await this.employeeRepository.findEmployeeByEmail(employeeDta.email);
-            if (existingEmployee) {
+            if (existingEmployee && existingEmployee.id !== id) {
                 throw new HttpException(StatusCodes.BAD_REQUEST, `Employee already exist`);
             }
         }

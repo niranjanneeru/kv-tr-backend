@@ -3,7 +3,7 @@
   "email": "john.doe@example.com",
   "age": 30,
   "password": "password123",
-  "role": "DEVELOPER",
+  "role": "UI",
   "address": {
     "address_line_1": "123 Main Street",
     "address_line_2": "Apt 4B",
@@ -12,7 +12,7 @@
     "country": "USA",
     "pincode": "10001"
   },
-  "departmentId": 7,
+  "departmentId": 1,
   "joiningDate": "2023-07-15",
   "experience": 5
 }
@@ -23,7 +23,7 @@
   "email": "jane.smith@example.com",
   "age": 28,
   "password": "pa$$w0rd",
-  "role": "HR",
+  "role": "UI",
   "address": {
     "address_line_1": "456 Oak Avenue",
     "address_line_2": "New Jersey",
@@ -32,7 +32,7 @@
     "country": "USA",
     "pincode": "90001"
   },
-  "departmentId": 6,
+  "departmentId": 1,
   "joiningDate": "2023-06-20",
   "experience": 7
 }
@@ -52,7 +52,7 @@
     "country": "USA",
     "pincode": "60601"
   },
-  "departmentId": 10,
+  "departmentId": 1,
   "joiningDate": "2023-08-10",
   "experience": 10
 }
@@ -63,7 +63,7 @@
   "email": "emily.williams@example.com",
   "age": 24,
   "password": "p@ssW0rd",
-  "role": "QA",
+  "role": "HR",
   "address": {
     "address_line_1": "1001 Willow Lane",
     "address_line_2": "Super Man",
@@ -72,7 +72,7 @@
     "country": "USA",
     "pincode": "94105"
   },
-  "departmentId": 9,
+  "departmentId": 4,
   "joiningDate": "2023-09-05",
   "experience": 3
 }
@@ -84,7 +84,7 @@
   "email": "daniel.brown@example.com",
   "age": 29,
   "password": "brownie123",
-  "role": "Manager",
+  "role": "MANAGER",
   "address": {
     "address_line_1": "505 Maple Street",
     "address_line_2": "Apt 12",
@@ -93,7 +93,7 @@
     "country": "USA",
     "pincode": "98101"
   },
-  "departmentId": 6,
+  "departmentId": 1,
   "joiningDate": "2023-10-20",
   "experience": 6
 }
