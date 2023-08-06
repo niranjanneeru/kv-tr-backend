@@ -13,6 +13,8 @@ import { Role } from "../utils/role.enum";
 import { StatusMessages } from "../utils/status.message.enum";
 import ResponseBody from "../utils/response.body";
 import { StatusCodes } from "../utils/status.code.enum";
+import RequestWithLogger from "../utils/request.logger";
+import Logger from "../logger/logger.singleton";
 
 class DepartmentController {
     public router: Router;
@@ -48,7 +50,7 @@ class DepartmentController {
         }
     }
 
-    createDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    createDepartment = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
             const createDepartmentDto = plainToInstance(CreateDepartmentDto, req.body);
             const errors = await validate(createDepartmentDto);
@@ -59,6 +61,7 @@ class DepartmentController {
             const responseBody = new ResponseBody(department, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
             res.status(StatusCodes.CREATED).send(responseBody);
+            Logger.getLogger().log({ level: 'info', message: `Department Created (${department.id})`, label: req.req_id});
         } catch (err) {
             next(err);
         }
@@ -98,11 +101,12 @@ class DepartmentController {
         }
     }
 
-    removeDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    removeDepartment = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
             const deptId = +req.params.id;
             const department = await this.departmentService.removeDepartment(deptId);
             res.status(StatusCodes.NO_CONTENT).send();
+            Logger.getLogger().log({ level: 'info', message: `Department Deleted (${department.id})`, label: req.req_id});
         } catch (err) {
             next(err);
         }

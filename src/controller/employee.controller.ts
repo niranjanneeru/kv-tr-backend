@@ -13,6 +13,8 @@ import authorize from "../middleware/authorize.middleware";
 import { Role } from "../utils/role.enum";
 import { StatusMessages } from "../utils/status.message.enum";
 import { StatusCodes } from "../utils/status.code.enum";
+import RequestWithLogger from "../utils/request.logger";
+import Logger from "../logger/logger.singleton";
 
 class EmployeeController {
     public router: Router;
@@ -51,7 +53,7 @@ class EmployeeController {
     }
 
     // TODO Change Dept -> Dept.id
-    createEmployee = async (req: Request, res: Response, next) => {
+    createEmployee = async (req: RequestWithLogger, res: Response, next) => {
         try {
             const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
             const errors = await validate(createEmployeeDto);
@@ -62,6 +64,7 @@ class EmployeeController {
             const responseBody = new ResponseBody(employee, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
             res.status(StatusCodes.CREATED).send(responseBody);
+            Logger.getLogger().log({ level: 'info', message: `Employee Created (${employee.id})`, label: req.req_id});
         } catch (err) {
             next(err);
         }
@@ -101,11 +104,12 @@ class EmployeeController {
         }
     }
 
-    removeEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    removeEmployee = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         let employeeId = +req.params.id;
         try {
             const employee = await this.employeeService.removeEmployee(employeeId);
             res.status(StatusCodes.NO_CONTENT).send();
+            Logger.getLogger().log({ level: 'info', message: `Employee Deleted (${employee.id})`, label: req.req_id});
         } catch (err) {
             next(err);
         }

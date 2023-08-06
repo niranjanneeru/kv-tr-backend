@@ -10,8 +10,8 @@ import EditAddressDto from '../dto/edit-address.dto';
 import EditEmployeeDto from '../dto/edit-employee.dto';
 import SetAddressDto from '../dto/patch-address.dto';
 import jwtPayload from '../utils/jwt.payload.type';
-import DepartmentRepository from '../repository/department.repository';
 import DepartmentService from './department.service';
+import { StatusCodes } from '../utils/status.code.enum';
 
 class EmployeeService {
     constructor(private employeeRepository: EmployeeRepository,
@@ -22,19 +22,21 @@ class EmployeeService {
     }
 
     async getEmployeeByID(id: number): Promise<Employee | null> {
+        if (isNaN(id)) {
+            throw new HttpException(StatusCodes.NOT_FOUND, `Department Not Found`);
+        }
         const employee = await this.employeeRepository.findEmployeeById(id);
         if (!employee) {
-            throw new HttpException(404, `Employee with id ${id} not found`);
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
         }
         return employee;
     }
 
 
-    // TODO: Check whether Employee Exists - Status Code
     async createEmployee(employeeDta: CreateEmployeeDto): Promise<Employee> {
         const existingEmployee = await this.employeeRepository.findEmployeeByEmail(employeeDta.email);
         if (existingEmployee) {
-            throw new HttpException(403, `Employee already exist`);
+            throw new HttpException(StatusCodes.BAD_REQUEST, `Employee already exist`);
         }
         const employee = new Employee();
         employee.name = employeeDta.name;
@@ -46,7 +48,7 @@ class EmployeeService {
 
         const department = await this.departmentService.getDepartmentById(employeeDta.departmentId, false);
         if (!department) {
-            throw new HttpException(404, `Department with id ${employeeDta.departmentId} not found`);
+            throw new HttpException(StatusCodes.NOT_FOUND, `Department with id ${employeeDta.departmentId} not found`);
         }
         employee.department = department;
 
@@ -63,22 +65,31 @@ class EmployeeService {
     }
 
     editEmployee = async (id: number, employeeDta: EditEmployeeDto): Promise<Employee | null> => {
+        if (isNaN(id)) {
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee Not Found`);
+        }
+        if (employeeDta.email) {
+            const existingEmployee = await this.employeeRepository.findEmployeeByEmail(employeeDta.email);
+            if (existingEmployee) {
+                throw new HttpException(StatusCodes.BAD_REQUEST, `Employee already exist`);
+            }
+        }
         const employee = await this.employeeRepository.findEmployeeById(id);
         if (!employee) {
-            throw new HttpException(404, `Employee with id ${id} not found`);
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
         }
         console.log(employeeDta);
         let keys = Object.getOwnPropertyNames(employeeDta);
         for (const key of keys) {
-            if(key === 'password'){
-                
+            if (key === 'password') {
+
             }
             else if (key === 'departmentId') {
                 const department = await this.departmentService.getDepartmentById(employeeDta[key], false);
                 if (!department) {
-                    throw new HttpException(404, `Department with id ${employeeDta.departmentId} not found`);
+                    throw new HttpException(StatusCodes.NOT_FOUND, `Department with id ${employeeDta.departmentId} not found`);
                 }
-                if(employee.department != department){
+                if (employee.department != department) {
                     employee.department = department;
                 }
             } else if (employeeDta[key] instanceof EditAddressDto || employeeDta[key] instanceof SetAddressDto) {
@@ -94,9 +105,12 @@ class EmployeeService {
     }
 
     removeEmployee = async (id: number): Promise<Employee | null> => {
+        if (isNaN(id)) {
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee Not Found`);
+        }
         const employee = await this.employeeRepository.findEmployeeById(id);
         if (!employee) {
-            throw new HttpException(404, `Employee with id ${id} not found`);
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
         }
         return this.employeeRepository.deleteEmployee(employee);
     }
@@ -104,11 +118,11 @@ class EmployeeService {
     loginEmployee = async (loginEmployeeDto: LoginEmployeeDto) => {
         const employee = await this.employeeRepository.findEmployeeByEmail(loginEmployeeDto.email);
         if (!employee) {
-            throw new HttpException(401, 'Incorrect username or password');
+            throw new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password');
         }
         const result = await bcrypt.compare(loginEmployeeDto.password, employee.password);
         if (!result) {
-            throw new HttpException(401, 'Incorrect username or password');
+            throw new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password');
         }
 
         const payload: jwtPayload = {

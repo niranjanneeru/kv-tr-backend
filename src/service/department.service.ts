@@ -15,6 +15,9 @@ class DepartmentService{
     }
 
     getDepartmentById =async (id:number, employees = true): Promise<Department> => {
+        if(isNaN(id)){
+            throw new HttpException(404, `Department Not Found`);
+        }
         const department = await this.departmentRepository.findDepartmentById(id, employees);
         if(!department){
             throw new HttpException(404, `Department with id ${id} not found`);
@@ -31,6 +34,9 @@ class DepartmentService{
     }
 
     editDepartment = async(id: number, departmentDto: EditDepartmentDto | PatchDepartmentDto): Promise<Department> => {
+        if(isNaN(id)){
+            throw new HttpException(404, `Department Not Found`);
+        }
         const department = await this.departmentRepository.findDepartmentById(id);
         if(!department){
             throw new HttpException(404, `Department with id ${id} not found`);
@@ -43,6 +49,9 @@ class DepartmentService{
     }
 
     removeDepartment = async(id: number): Promise<Department> => {
+        if(isNaN(id)){
+            throw new HttpException(404, `Department Not Found`);
+        }
         const department = await this.departmentRepository.findDepartmentById(id);
         if(!department){
             throw new HttpException(404, `Department with id ${id} not found`);

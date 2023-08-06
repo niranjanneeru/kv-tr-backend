@@ -3,13 +3,14 @@ import jwt from "jsonwebtoken";
 import RequestWithUser from "../utils/request.user";
 import { Role } from "../utils/role.enum";
 import HttpException from "../exception/http.exception";
+import { StatusCodes } from "../utils/status.code.enum";
 
 const authorize = function (...roles: Role[]) {
     return async (req: RequestWithUser, res: Response, next: NextFunction) => {
         try {
             const role = req.role;
-            if(roles.indexOf(role) === -1){
-                throw new HttpException(403, "Forbidden Action");
+            if (roles.indexOf(role) === -1) {
+                throw new HttpException(StatusCodes.FORBIDDEN, "Forbidden Action");
             }
             next();
         } catch (err) {
