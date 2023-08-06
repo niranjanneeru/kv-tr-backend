@@ -8,6 +8,7 @@ import DepartmentService from "../../service/department.service";
 import DepartmentRepository from "../../repository/department.repository";
 import Department from "../../entity/department.entity";
 import { StatusCodes } from "../../utils/status.code.enum";
+import { StatusMessages } from "../../utils/status.message.enum";
 import CreateEmployeeDto from "../../dto/create-employee.dto";
 import { Role } from "../../utils/role.enum";
 import EditEmployeeDto from "../../dto/edit-employee.dto";
@@ -35,6 +36,7 @@ describe('Employee Service', () => {
 
     describe('Test for getEmployeeById', () => {
         test('Test Employee for id 1 - Error Case', async () => {
+            const val = StatusMessages.OK;
             const mockFunction = jest.fn();
             when(mockFunction).calledWith(1).mockResolvedValueOnce(null);
             employeeRepository.findEmployeeById = mockFunction;
@@ -254,123 +256,122 @@ describe('Employee Service', () => {
                 editEmployeeDto.email
             );
         });
+    });
 
-        describe('removeEmployee', () => {
-            const employeeId = 1;
-            const existingEmployee = new Employee();
-            existingEmployee.id = employeeId;
-            existingEmployee.name = 'John Doe';
-            existingEmployee.email = 'john.doe@example.com';
+    describe('removeEmployee', () => {
+        const employeeId = 1;
+        const existingEmployee = new Employee();
+        existingEmployee.id = employeeId;
+        existingEmployee.name = 'John Doe';
+        existingEmployee.email = 'john.doe@example.com';
 
-            it('should remove the employee', async () => {
-
-
-                const f = jest.fn();
-                when(f).calledWith(1).mockResolvedValue(existingEmployee);
-                employeeRepository.findEmployeeById = f;
+        it('should remove the employee', async () => {
 
 
-                const f2 = jest.fn();
-                when(f2).calledWith(existingEmployee).mockResolvedValue(existingEmployee);
-                employeeRepository.deleteEmployee = f2;
+            const f = jest.fn();
+            when(f).calledWith(1).mockResolvedValue(existingEmployee);
+            employeeRepository.findEmployeeById = f;
 
-                const result = await employeeService.removeEmployee(employeeId);
 
-                expect(result).toEqual(existingEmployee);
-                expect(employeeRepository.findEmployeeById).toHaveBeenCalledWith(employeeId);
-                expect(employeeRepository.deleteEmployee).toHaveBeenCalledWith(existingEmployee);
-            });
+            const f2 = jest.fn();
+            when(f2).calledWith(existingEmployee).mockResolvedValue(existingEmployee);
+            employeeRepository.deleteEmployee = f2;
 
-            it('should throw an error if employee with the given id does not exist', async () => {
+            const result = await employeeService.removeEmployee(employeeId);
 
-                const f = jest.fn();
-                when(f).calledWith(1).mockResolvedValue(null);
-                employeeRepository.findEmployeeById = f;
-
-                await expect(employeeService.removeEmployee(1)).rejects.toThrow(
-                    new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${employeeId} not found`)
-                );
-
-                expect(employeeRepository.findEmployeeById).toHaveBeenCalledWith(employeeId);
-            });
+            expect(result).toEqual(existingEmployee);
+            expect(employeeRepository.findEmployeeById).toHaveBeenCalledWith(employeeId);
+            expect(employeeRepository.deleteEmployee).toHaveBeenCalledWith(existingEmployee);
         });
 
-        describe('loginEmployee', () => {
-            const loginEmployeeDto: LoginEmployeeDto = {
-                email: 'john.doe@example.com',
-                password: 'password123',
-            };
+        it('should throw an error if employee with the given id does not exist', async () => {
 
-            it('should successfully login an employee', async () => {
-                const employee = new Employee();
-                employee.id = 1;
-                employee.name = 'John Doe';
-                employee.email = loginEmployeeDto.email;
-                employee.role = Role.DEVELOPER;
-                employee.password = await bcrypt.hash(loginEmployeeDto.password, 10);
+            const f = jest.fn();
+            when(f).calledWith(1).mockResolvedValue(null);
+            employeeRepository.findEmployeeById = f;
 
-                const f2 = jest.fn();
-                when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(employee);
-                employeeRepository.findEmployeeByEmail = f2;
+            await expect(employeeService.removeEmployee(1)).rejects.toThrow(
+                new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${employeeId} not found`)
+            );
 
-                const f = jest.fn();
-                when(f).calledWith(loginEmployeeDto.password, employee.password).mockResolvedValue(true);
-                bcrypt.compare = f;
+            expect(employeeRepository.findEmployeeById).toHaveBeenCalledWith(employeeId);
+        });
+    });
 
-                const f3 = jest.fn();
-                when(f3).calledWith(employee.password).mockResolvedValue(true);
-                jwt.sign = f3;
+    describe('loginEmployee', () => {
+        const loginEmployeeDto: LoginEmployeeDto = {
+            email: 'john.doe@example.com',
+            password: 'password123',
+        };
 
+        it('should successfully login an employee', async () => {
+            const employee = new Employee();
+            employee.id = 1;
+            employee.name = 'John Doe';
+            employee.email = loginEmployeeDto.email;
+            employee.role = Role.DEVELOPER;
+            employee.password = await bcrypt.hash(loginEmployeeDto.password, 10);
 
-                const token = 'jwt_token';
+            const f2 = jest.fn();
+            when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(employee);
+            employeeRepository.findEmployeeByEmail = f2;
 
-                const result = await employeeService.loginEmployee(loginEmployeeDto);
+            const f = jest.fn();
+            when(f).calledWith(loginEmployeeDto.password, employee.password).mockResolvedValue(true);
+            bcrypt.compare = f;
 
-                expect(result.employeeDetails).toEqual(employee);
-                expect(jwt.sign).toHaveBeenCalledWith(
-                    {
-                        name: employee.name,
-                        email: employee.email,
-                        role: employee.role,
-                    },
-                    process.env.JWT_SECRET_KEY,
-                    {
-                        expiresIn: process.env.JWT_EXPIRY,
-                    }
-                );
-            });
-
-            it('should throw an error if employee with the given email does not exist', async () => {
-                const f2 = jest.fn();
-                when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(null);
-                employeeRepository.findEmployeeByEmail = f2;
-
-                await expect(employeeService.loginEmployee(loginEmployeeDto)).rejects.toThrow(
-                    new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password')
-                );
+            const f3 = jest.fn();
+            when(f3).calledWith(employee.password).mockResolvedValue(true);
+            jwt.sign = f3;
 
 
-            });
+            const token = 'jwt_token';
 
-            it('should throw an error if the password does not match', async () => {
-                const employee = new Employee();
-                employee.id = 1;
-                employee.email = loginEmployeeDto.email;
-                employee.password = await bcrypt.hash('wrong_password', 10);
+            const result = await employeeService.loginEmployee(loginEmployeeDto);
 
-                const f2 = jest.fn();
-                when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(null);
-                employeeRepository.findEmployeeByEmail = f2;
-
-                const f = jest.fn();
-                when(f).calledWith(loginEmployeeDto.password, employee.password).mockResolvedValue(false);
-                bcrypt.compare = f;
-
-                await expect(employeeService.loginEmployee(loginEmployeeDto)).rejects.toThrow(
-                    new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password')
-                );
-            });
+            expect(result.employeeDetails).toEqual(employee);
+            expect(jwt.sign).toHaveBeenCalledWith(
+                {
+                    name: employee.name,
+                    email: employee.email,
+                    role: employee.role,
+                },
+                process.env.JWT_SECRET_KEY,
+                {
+                    expiresIn: process.env.JWT_EXPIRY,
+                }
+            );
         });
 
+        it('should throw an error if employee with the given email does not exist', async () => {
+            const f2 = jest.fn();
+            when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(null);
+            employeeRepository.findEmployeeByEmail = f2;
+
+            await expect(employeeService.loginEmployee(loginEmployeeDto)).rejects.toThrow(
+                new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password')
+            );
+
+
+        });
+
+        it('should throw an error if the password does not match', async () => {
+            const employee = new Employee();
+            employee.id = 1;
+            employee.email = loginEmployeeDto.email;
+            employee.password = await bcrypt.hash('wrong_password', 10);
+
+            const f2 = jest.fn();
+            when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(null);
+            employeeRepository.findEmployeeByEmail = f2;
+
+            const f = jest.fn();
+            when(f).calledWith(loginEmployeeDto.password, employee.password).mockResolvedValue(false);
+            bcrypt.compare = f;
+
+            await expect(employeeService.loginEmployee(loginEmployeeDto)).rejects.toThrow(
+                new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password')
+            );
+        });
     });
 })

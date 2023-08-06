@@ -12,3 +12,4 @@
 2023-08-05T16:48:26.255Z [d92002f6-66e8-44a1-b619-4fabd26f192b] error: invalid input syntax for type integer: "NaN"
 2023-08-05T16:48:31.886Z [4930ed46-e4d2-441d-bfd7-20dee86e3c38] info: GET - /employees/21
 2023-08-05T16:48:31.887Z [4930ed46-e4d2-441d-bfd7-20dee86e3c38] info: web@admin.com Logged In
+2023-08-06T12:52:05.346Z [] info: GET - /roles

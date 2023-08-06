@@ -1,8 +1,12 @@
-import { Role } from "../utils/role.enum";
+import RoleRepository from "../repository/role.repository";
 
 class RoleService{
+
+    constructor(
+        private repository: RoleRepository
+    ){}
     getRoles(){
-        return Object.keys(Role);
+        return this.repository.getAllRoles();
     }
 }
 

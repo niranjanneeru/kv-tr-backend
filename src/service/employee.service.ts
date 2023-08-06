@@ -78,7 +78,7 @@ class EmployeeService {
         if (!employee) {
             throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
         }
-        console.log(employeeDta);
+        // console.log(employeeDta);
         let keys = Object.getOwnPropertyNames(employeeDta);
         for (const key of keys) {
             if (key === 'password') {
