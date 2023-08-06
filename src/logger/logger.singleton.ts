@@ -10,7 +10,6 @@ class Logger {
                 new winston.transports.File({
                     filename: 'error.log', level: 'error',
                     format: winston.format.combine(
-                        winston.format.label({ label: '' }),
                         winston.format.timestamp(),
                         this.routeLoggerFormat
                     )
@@ -18,7 +17,6 @@ class Logger {
                 new winston.transports.File({
                     filename: 'combined.log',
                     format: winston.format.combine(
-                        winston.format.label({ label: '' }),
                         winston.format.timestamp(),
                         this.routeLoggerFormat
                     )

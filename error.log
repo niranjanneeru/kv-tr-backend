@@ -1,2 +1,2 @@
 2023-08-05T16:48:26.255Z [d92002f6-66e8-44a1-b619-4fabd26f192b] error: invalid input syntax for type integer: "NaN"
-2023-08-06T18:30:23.346Z [] error: duplicate key value violates unique constraint "IDX_817d1d427138772d47eca04885"
+2023-08-06T18:30:23.346Z [d92002f6-66e8-44a1-b619-4fabd26f1234] error: duplicate key value violates unique constraint "IDX_817d1d427138772d47eca04885"

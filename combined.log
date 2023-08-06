@@ -174,3 +174,15 @@
 2023-08-06T18:49:20.739Z [] info: GET - /api/roles
 2023-08-06T18:49:55.500Z [] info: DELETE - /api/departments/1
 2023-08-06T18:49:55.501Z [] info: jwt must be provided
+2023-08-06T18:53:11.920Z [] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-06T18:53:11.925Z [] info: emily.williams@example.com Logged In
+2023-08-06T18:54:04.311Z [] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-06T18:54:04.316Z [] info: emily.williams@example.com Logged In
+2023-08-06T18:56:40.753Z [] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-06T18:56:40.758Z [] info: emily.williams@example.com Logged In
+2023-08-06T18:57:38.234Z [] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-06T18:57:38.238Z [] info: emily.williams@example.com Logged In
+2023-08-06T18:59:04.964Z [undefined] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-06T18:59:04.968Z [undefined] info: emily.williams@example.com Logged In
+2023-08-06T18:59:35.629Z [9ce37370-55f5-4493-bc2a-3edcf6080ad0] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-06T18:59:35.635Z [9ce37370-55f5-4493-bc2a-3edcf6080ad0] info: emily.williams@example.com Logged In

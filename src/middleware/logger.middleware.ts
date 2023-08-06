@@ -18,7 +18,7 @@ const loggerMiddleware = (req: RequestWithLogger, res: Response, next: NextFunct
     logger.debug(`${req.method} - ${req.url}`);
     const req_id = uuidv4();
     logger = Logger.getLogger()
-    logger.info(`${req.method} - ${req.url}`);
+    logger.info({message: `${req.method} - ${req.url}`, label : req_id});
     req.req_id = req_id;
     next();
 };
