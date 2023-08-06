@@ -5,6 +5,9 @@ import AbstractEntity from "./abstract.enitiy";
 @Entity()
 class Department extends AbstractEntity{
 
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column()
     name: string;
 

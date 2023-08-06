@@ -1,13 +1,9 @@
 import { DataSource } from "typeorm";
-import EmployeeRepository from "../../repository/employee.repository";
-import EmployeeService from "../../service/employee.service";
-import Employee from "../../entity/employee.entity";
 import { when } from "jest-when";
 import HttpException from "../../exception/http.exception";
 import DepartmentService from "../../service/department.service";
 import DepartmentRepository from "../../repository/department.repository";
 import Department from "../../entity/department.entity";
-import { StatusMessages } from "../../utils/status.message.enum";
 import CreateDepartmentDto from "../../dto/create.department.dto";
 import EditDepartmentDto from "../../dto/edit.department.dto";
 import PatchDepartmentDto from "../../dto/patch.department";
@@ -177,10 +173,22 @@ describe('Department Service', () => {
 
             expect(departmentRepository.findDepartmentById).toHaveBeenCalledWith(departmentId);
         });
+
+        test('Test for id NaN', async () => {
+            await expect(async () => {
+                await departmentService.editDepartment(NaN, {} as unknown as EditDepartmentDto);
+            }).rejects.toThrow(HttpException);
+        })
     });
 
     describe('removeDepartment', () => {
         const departmentId = 1;
+
+        test('Test for id NaN', async () => {
+            await expect(async () => {
+                await departmentService.removeDepartment(NaN);
+            }).rejects.toThrow(HttpException);
+        })
 
         it('should remove the department', async () => {
             const department = new Department();

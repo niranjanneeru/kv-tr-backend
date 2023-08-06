@@ -19,9 +19,9 @@ server.use(express.json());
 
 server.use(loggerMiddleware);
 
-server.use('/employees', employeeRoute);
-server.use('/departments', departmentRoute);
-server.use('/roles', roleRoute);
+server.use('/api/employees', employeeRoute);
+server.use('/api/departments', departmentRoute);
+server.use('/api/roles', roleRoute);
 
 server.all('*', (req: Request, res: Response) => {
     res.status(404).send();

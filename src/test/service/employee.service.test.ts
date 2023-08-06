@@ -17,6 +17,8 @@ import bcrypt from 'bcrypt'
 
 import jwt from 'jsonwebtoken';
 import LoginEmployeeDto from "../../dto/login.employee.dto";
+import EditAddressDto from "../../dto/edit-address.dto";
+import Address from "../../entity/address.entity";
 
 describe('Employee Service', () => {
     let employeeService: EmployeeService;
@@ -38,17 +40,17 @@ describe('Employee Service', () => {
         test('Test Employee for id 1 - Error Case', async () => {
             const val = StatusMessages.OK;
             const mockFunction = jest.fn();
-            when(mockFunction).calledWith(1).mockResolvedValueOnce(null);
+            when(mockFunction).calledWith("1").mockResolvedValueOnce(null);
             employeeRepository.findEmployeeById = mockFunction;
             await expect(async () => {
-                await employeeService.getEmployeeByID(1);
+                await employeeService.getEmployeeByID("1");
             }).rejects.toThrow(HttpException);
         })
 
         test('Test Employee for id 7 - Success Case', async () => {
             const mockFunction = jest.fn();
-            when(mockFunction).calledWith(7).mockResolvedValue({
-                "id": 7,
+            when(mockFunction).calledWith("7").mockResolvedValue({
+                "id": "7",
                 "createdAt": "2023-08-03T23:53:50.969Z",
                 "updatedAt": "2023-08-04T03:43:18.688Z",
                 "deletedAt": null,
@@ -67,9 +69,9 @@ describe('Employee Service', () => {
                 "department": null
             });
             employeeRepository.findEmployeeById = mockFunction;
-            const employee = await employeeService.getEmployeeByID(7);
+            const employee = await employeeService.getEmployeeByID("7");
             expect(employee).toStrictEqual({
-                "id": 7,
+                "id": "7",
                 "createdAt": "2023-08-03T23:53:50.969Z",
                 "updatedAt": "2023-08-04T03:43:18.688Z",
                 "deletedAt": null,
@@ -89,42 +91,6 @@ describe('Employee Service', () => {
             });
         })
     });
-
-    describe('Test for getAllEmployees', () => {
-        test('Test GetAll Employees End Point', async () => {
-            const mockFunction = jest.fn();
-            when(mockFunction).calledWith().mockResolvedValueOnce([]);
-            employeeRepository.find = mockFunction;
-            const employees = await employeeService.getAllEmployees();
-            expect(employees).toStrictEqual([]);
-        })
-
-        test('Test GetAll Employees End Point', async () => {
-            const mockFunction = jest.fn();
-            when(mockFunction).calledWith().mockResolvedValueOnce([{}, {}]);
-            employeeRepository.find = mockFunction;
-            const employees = await employeeService.getAllEmployees();
-            expect(employees.length).toEqual(2);
-        })
-    })
-
-    describe('Test for getAllEmployees', () => {
-        test('Test GetAll Employees End Point', async () => {
-            const mockFunction = jest.fn();
-            when(mockFunction).calledWith().mockResolvedValueOnce([]);
-            employeeRepository.find = mockFunction;
-            const employees = await employeeService.getAllEmployees();
-            expect(employees).toStrictEqual([]);
-        })
-
-        test('Test GetAll Employees End Point', async () => {
-            const mockFunction = jest.fn();
-            when(mockFunction).calledWith().mockResolvedValueOnce([{}, {}]);
-            employeeRepository.find = mockFunction;
-            const employees = await employeeService.getAllEmployees();
-            expect(employees.length).toEqual(2);
-        })
-    })
 
     describe('Test for getAllEmployees', () => {
         test('Test GetAll Employees End Point', async () => {
@@ -208,10 +174,32 @@ describe('Employee Service', () => {
                 createEmployeeDto.email
             );
         });
+
+        it('Invalid Department ID', async () => {
+            const existingEmployee = new Employee();
+            const f2 = jest.fn();
+            when(f2).calledWith(createEmployeeDto.email).mockResolvedValue(null)
+            employeeRepository.findEmployeeByEmail = f2;
+
+            const f = jest.fn();
+            when(f).calledWith(1, false).mockResolvedValue(null)
+            departmentService.getDepartmentById = f;
+
+
+
+            await expect(async () => {
+                await employeeService.createEmployee(createEmployeeDto as CreateEmployeeDto)
+            }).rejects.toThrow(HttpException);
+
+            expect(employeeRepository.findEmployeeByEmail).toHaveBeenCalledWith(
+                createEmployeeDto.email
+            );
+        });
+
     });
 
     describe('editEmployee', () => {
-        const employeeId = 1;
+        const employeeId = "1";
         const editEmployeeDto = {
             name: 'John Doe',
             email: 'john.doe@example.com',
@@ -230,14 +218,44 @@ describe('Employee Service', () => {
             },
         };
 
+        test('Test Employee for id 1 - Error Case', async () => {
+            const mockFunction = jest.fn();
+            when(mockFunction).calledWith("1").mockResolvedValueOnce(null);
+            employeeRepository.findEmployeeById = mockFunction;
+            await expect(async () => {
+                await employeeService.editEmployee("1", {} as EditEmployeeDto);
+            }).rejects.toThrow(HttpException);
+        })
+
+        it('should throw an error if employee with the same email already exists', async () => {
+            const existingEmployee = new Employee();
+            const f2 = jest.fn();
+            when(f2).calledWith(editEmployeeDto.email).mockResolvedValue({ 'email': 'email' })
+            employeeRepository.findEmployeeByEmail = f2;
+
+            await expect(async () => {
+                await employeeService.editEmployee("1", editEmployeeDto as unknown as EditEmployeeDto)
+            }).rejects.toThrow(HttpException);
+
+            expect(employeeRepository.findEmployeeByEmail).toHaveBeenCalledWith(
+                editEmployeeDto.email
+            );
+        });
+
         it('should update the employee data', async () => {
             const existingEmployee = new Employee();
             existingEmployee.id = employeeId;
             existingEmployee.name = 'Original Employee';
             existingEmployee.email = 'original.employee@example.com';
+            existingEmployee.departmentId = 1;
+            existingEmployee.address = new Address();
+
+            const f1 = jest.fn();
+            when(f1).calledWith(1, false).mockResolvedValue("UI");
+            departmentService.getDepartmentById = f1;
 
             const f = jest.fn();
-            when(f).calledWith(1).mockResolvedValue(existingEmployee);
+            when(f).calledWith("1").mockResolvedValue(existingEmployee);
             employeeRepository.findEmployeeById = f;
 
 
@@ -249,17 +267,54 @@ describe('Employee Service', () => {
             when(f3).calledWith(existingEmployee).mockResolvedValue(existingEmployee);
             employeeRepository.updateEmployee = f3;
 
-            await employeeService.editEmployee(employeeId, { email: 'john.doe@example.com' } as unknown as EditEmployeeDto);
+            let address = new EditAddressDto();
+            address.addressLine1 = "Something";
+            await employeeService.editEmployee(employeeId, { email: 'john.doe@example.com', 'departmentId' : 1, 'address' : address, password : "No Use" } as unknown as EditEmployeeDto);
 
             expect(employeeRepository.findEmployeeById).toHaveBeenCalledWith(employeeId);
             expect(employeeRepository.findEmployeeByEmail).toHaveBeenCalledWith(
                 editEmployeeDto.email
             );
         });
+
+        it('Invalid Department', async () => {
+            const existingEmployee = new Employee();
+            existingEmployee.id = employeeId;
+            existingEmployee.name = 'Original Employee';
+            existingEmployee.email = 'original.employee@example.com';
+            existingEmployee.departmentId = 0;
+
+            const f1 = jest.fn();
+            when(f1).calledWith(0, false).mockResolvedValue(null);
+            departmentService.getDepartmentById = f1;
+
+            const f = jest.fn();
+            when(f).calledWith("1").mockResolvedValue(existingEmployee);
+            employeeRepository.findEmployeeById = f;
+
+
+            const f2 = jest.fn();
+            when(f2).calledWith(editEmployeeDto.email).mockResolvedValue(null);
+            employeeRepository.findEmployeeByEmail = f2;
+
+            const f3 = jest.fn();
+            when(f3).calledWith(existingEmployee).mockResolvedValue(existingEmployee);
+            employeeRepository.updateEmployee = f3;
+
+            await expect( async () => {
+                await employeeService.editEmployee(employeeId, { email: 'john.doe@example.com', 'departmentId' : 0 } as unknown as EditEmployeeDto);
+            }).rejects.toThrow(HttpException);
+
+            expect(employeeRepository.findEmployeeById).toHaveBeenCalledWith(employeeId);
+            expect(employeeRepository.findEmployeeByEmail).toHaveBeenCalledWith(
+                editEmployeeDto.email
+            );
+        });
+
     });
 
     describe('removeEmployee', () => {
-        const employeeId = 1;
+        const employeeId = "1";
         const existingEmployee = new Employee();
         existingEmployee.id = employeeId;
         existingEmployee.name = 'John Doe';
@@ -269,7 +324,7 @@ describe('Employee Service', () => {
 
 
             const f = jest.fn();
-            when(f).calledWith(1).mockResolvedValue(existingEmployee);
+            when(f).calledWith("1").mockResolvedValue(existingEmployee);
             employeeRepository.findEmployeeById = f;
 
 
@@ -290,7 +345,7 @@ describe('Employee Service', () => {
             when(f).calledWith(1).mockResolvedValue(null);
             employeeRepository.findEmployeeById = f;
 
-            await expect(employeeService.removeEmployee(1)).rejects.toThrow(
+            await expect(employeeService.removeEmployee("1")).rejects.toThrow(
                 new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${employeeId} not found`)
             );
 
@@ -306,7 +361,7 @@ describe('Employee Service', () => {
 
         it('should successfully login an employee', async () => {
             const employee = new Employee();
-            employee.id = 1;
+            employee.id = "1";
             employee.name = 'John Doe';
             employee.email = loginEmployeeDto.email;
             employee.role = Role.DEVELOPER;
@@ -357,12 +412,12 @@ describe('Employee Service', () => {
 
         it('should throw an error if the password does not match', async () => {
             const employee = new Employee();
-            employee.id = 1;
+            employee.id = "1";
             employee.email = loginEmployeeDto.email;
             employee.password = await bcrypt.hash('wrong_password', 10);
 
             const f2 = jest.fn();
-            when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue(null);
+            when(f2).calledWith(loginEmployeeDto.email).mockResolvedValue("abcd");
             employeeRepository.findEmployeeByEmail = f2;
 
             const f = jest.fn();

@@ -23,7 +23,7 @@ class EmployeeController {
         this.router = Router();
 
         this.router.get("/", authenticate, this.getAllEmployees);
-        this.router.post("/", authenticate, authorize(Role.HR), this.createEmployee);
+        this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
         this.router.put("/:id", authenticate, this.editEmployee);
         this.router.patch("/:id", authenticate, this.setFieldEmployee);
@@ -42,7 +42,7 @@ class EmployeeController {
     // TODO Change Dept -> Dept.id
     getEmployeeById = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const employeeId = +req.params.id;
+            const employeeId = req.params.id;
             const employee = await this.employeeService.getEmployeeByID(employeeId);
             const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
             responseBody.set_meta(1);
@@ -71,7 +71,7 @@ class EmployeeController {
     }
 
     editEmployee = async (req: Request, res: Response, next: NextFunction) => {
-        let employeeId = +req.params.id;
+        let employeeId = req.params.id;
         try {
             const editEmployeeDto = plainToInstance(EditEmployeeDto, req.body);
             const errors = await validate(editEmployeeDto);
@@ -88,7 +88,7 @@ class EmployeeController {
     }
 
     setFieldEmployee = async (req: Request, res: Response, next: NextFunction) => {
-        let employeeId = +req.params.id;
+        let employeeId = req.params.id;
         try {
             const setEmployeeDto = plainToInstance(SetEmployeeDto, req.body);
             const errors = await validate(setEmployeeDto, { skipMissingProperties: true });
@@ -105,7 +105,7 @@ class EmployeeController {
     }
 
     removeEmployee = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
-        let employeeId = +req.params.id;
+        let employeeId = req.params.id;
         try {
             const employee = await this.employeeService.removeEmployee(employeeId);
             res.status(StatusCodes.NO_CONTENT).send();

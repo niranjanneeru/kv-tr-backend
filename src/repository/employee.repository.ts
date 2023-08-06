@@ -1,15 +1,19 @@
 import { DataSource, Repository } from "typeorm";
 import Employee from "../entity/employee.entity";
-import dataSource from "../db/postgres.db";
 
 class EmployeeRepository {
     constructor(private repository: Repository<Employee>) { }
 
     find(): Promise<Employee[]> {
-        return this.repository.find();
+        // return this.repository.find();
+        return this.repository
+            .createQueryBuilder('employee')
+            .leftJoinAndSelect('employee.department', 'department')
+            .addSelect('employee.departmentId')
+            .getMany();
     }
 
-    findEmployeeById(id: number): Promise<Employee> {
+    findEmployeeById(id: string): Promise<Employee> {
         return this.repository.findOne({
             where: { id },
             relations: {

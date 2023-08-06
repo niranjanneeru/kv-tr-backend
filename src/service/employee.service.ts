@@ -21,10 +21,7 @@ class EmployeeService {
         return this.employeeRepository.find();
     }
 
-    async getEmployeeByID(id: number): Promise<Employee | null> {
-        if (isNaN(id)) {
-            throw new HttpException(StatusCodes.NOT_FOUND, `Department Not Found`);
-        }
+    async getEmployeeByID(id: string): Promise<Employee | null> {
         const employee = await this.employeeRepository.findEmployeeById(id);
         if (!employee) {
             throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
@@ -64,10 +61,7 @@ class EmployeeService {
         return this.employeeRepository.createEmployee(employee);
     }
 
-    editEmployee = async (id: number, employeeDta: EditEmployeeDto): Promise<Employee | null> => {
-        if (isNaN(id)) {
-            throw new HttpException(StatusCodes.NOT_FOUND, `Employee Not Found`);
-        }
+    editEmployee = async (id: string, employeeDta: EditEmployeeDto): Promise<Employee | null> => {
         if (employeeDta.email) {
             const existingEmployee = await this.employeeRepository.findEmployeeByEmail(employeeDta.email);
             if (existingEmployee) {
@@ -104,10 +98,7 @@ class EmployeeService {
         return this.employeeRepository.updateEmployee(employee);
     }
 
-    removeEmployee = async (id: number): Promise<Employee | null> => {
-        if (isNaN(id)) {
-            throw new HttpException(StatusCodes.NOT_FOUND, `Employee Not Found`);
-        }
+    removeEmployee = async (id: string): Promise<Employee | null> => {
         const employee = await this.employeeRepository.findEmployeeById(id);
         if (!employee) {
             throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);

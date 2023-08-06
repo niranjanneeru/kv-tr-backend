@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, OneToOne } from 'typeorm'
+import { Column, Entity, Index, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, RelationId } from 'typeorm'
 import Address from './address.entity';
 import Department from './department.entity';
 import AbstractEntity from './abstract.enitiy';
@@ -7,6 +7,10 @@ import { Role } from '../utils/role.enum';
 @Entity()
 @Index(["email"], { unique: true })
 export default class Employee extends AbstractEntity {
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
     @Column()
     name: string;
 
@@ -22,6 +26,10 @@ export default class Employee extends AbstractEntity {
         onDelete: 'CASCADE'
     })
     department: Department;
+
+    @Column()
+    departmentId : number;
+
 
     @Column()
     password: string;

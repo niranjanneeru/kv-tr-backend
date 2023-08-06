@@ -3,7 +3,11 @@ import Employee from "./employee.entity";
 import AbstractEntity from "./abstract.enitiy";
 
 @Entity()
-class Address extends AbstractEntity{
+class Address extends AbstractEntity {
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column()
     addressLine1: string;
 
@@ -21,7 +25,7 @@ class Address extends AbstractEntity{
 
     @Column()
     pincode: string;
-    
+
     @OneToOne(() => Employee, (employee) => employee.address)
     @JoinColumn()
     employee: Employee
