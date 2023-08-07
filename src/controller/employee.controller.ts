@@ -15,6 +15,9 @@ import { StatusMessages } from "../utils/status.message.enum";
 import { StatusCodes } from "../utils/status.code.enum";
 import RequestWithLogger from "../utils/request.logger";
 import Logger from "../logger/logger.singleton";
+import validateMiddleware from "../middleware/validate.middleware";
+import EditAddressDto from "../dto/edit-address.dto";
+import PatchDepartmentDto from "../dto/patch.department";
 
 class EmployeeController {
     public router: Router;
@@ -23,19 +26,26 @@ class EmployeeController {
         this.router = Router();
 
         this.router.get("/", authenticate, this.getAllEmployees);
-        this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), this.createEmployee);
+        this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), validateMiddleware(CreateEmployeeDto), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
-        this.router.put("/:id", authenticate, this.editEmployee);
-        this.router.patch("/:id", authenticate, this.setFieldEmployee);
+        this.router.put("/:id", authenticate, validateMiddleware(EditAddressDto), this.editEmployee);
+        this.router.patch("/:id", authenticate, validateMiddleware(PatchDepartmentDto, { skipMissingProperties: true }), this.setFieldEmployee);
         this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeEmployee);
-        this.router.post("/login", this.loginEmployee);
+        this.router.post("/login", validateMiddleware(LoginEmployeeDto), this.loginEmployee);
     }
 
     // TODO Change Dept -> Dept.id
     getAllEmployees = async (req: Request, res: Response) => {
-        const employees = await this.employeeService.getAllEmployees();
+        const params = req.query;
+        let { employeePromise, page, pageSize } = this.employeeService.getAllEmployees(params);
+        const employees = await employeePromise;
         const responseBody = new ResponseBody(employees, null, StatusMessages.OK);
-        responseBody.set_meta(employees.length);
+        const responseCount = await this.employeeService.getEmployeeCount();
+        if (page * pageSize > responseCount) {
+            responseBody.set_meta(employees.length, responseCount);
+        } else {
+            responseBody.set_meta(employees.length, responseCount, { pageSize }, { page });
+        }
         res.status(StatusCodes.OK).send(responseBody);
     }
 
@@ -56,15 +66,11 @@ class EmployeeController {
     createEmployee = async (req: RequestWithLogger, res: Response, next) => {
         try {
             const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
-            const errors = await validate(createEmployeeDto);
-            if (errors.length > 0) {
-                throw new ValidationException(400, "Validation Errors", errors);
-            }
             const employee = await this.employeeService.createEmployee(createEmployeeDto);
             const responseBody = new ResponseBody(employee, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
             res.status(StatusCodes.CREATED).send(responseBody);
-            Logger.getLogger().log({ level: 'info', message: `Employee Created (${employee.id})`, label: req.req_id});
+            Logger.getLogger().log({ level: 'info', message: `Employee Created (${employee.id})`, label: req.req_id });
         } catch (err) {
             next(err);
         }
@@ -74,10 +80,6 @@ class EmployeeController {
         let employeeId = req.params.id;
         try {
             const editEmployeeDto = plainToInstance(EditEmployeeDto, req.body);
-            const errors = await validate(editEmployeeDto);
-            if (errors.length > 0) {
-                throw new ValidationException(400, "Validation Errors", errors);
-            }
             const employee = await this.employeeService.editEmployee(employeeId, editEmployeeDto);
             const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
             responseBody.set_meta(1);
@@ -91,10 +93,6 @@ class EmployeeController {
         let employeeId = req.params.id;
         try {
             const setEmployeeDto = plainToInstance(SetEmployeeDto, req.body);
-            const errors = await validate(setEmployeeDto, { skipMissingProperties: true });
-            if (errors.length > 0) {
-                throw new ValidationException(400, "Validation Errors", errors);
-            }
             const employee = await this.employeeService.editEmployee(employeeId, setEmployeeDto as EditEmployeeDto);
             const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
             responseBody.set_meta(1);
@@ -109,7 +107,7 @@ class EmployeeController {
         try {
             const employee = await this.employeeService.removeEmployee(employeeId);
             res.status(StatusCodes.NO_CONTENT).send();
-            Logger.getLogger().log({ level: 'info', message: `Employee Deleted (${employee.id})`, label: req.req_id});
+            Logger.getLogger().log({ level: 'info', message: `Employee Deleted (${employee.id})`, label: req.req_id });
         } catch (err) {
             next(err);
         }
@@ -117,10 +115,6 @@ class EmployeeController {
 
     loginEmployee = async (req: Request, res: Response, next: NextFunction) => {
         const loginEmployeeDto = plainToInstance(LoginEmployeeDto, req.body);
-        const errors = await validate(LoginEmployeeDto);
-        if (errors.length > 0) {
-            throw new ValidationException(400, "Validation Errors", errors);
-        }
         try {
             const data = await this.employeeService.loginEmployee(loginEmployeeDto);
             const responseBody = new ResponseBody(data, null, StatusMessages.OK);

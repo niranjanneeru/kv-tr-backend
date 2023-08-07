@@ -14,11 +14,25 @@ import DepartmentService from './department.service';
 import { StatusCodes } from '../utils/status.code.enum';
 
 class EmployeeService {
+
+    // getAllEmployeesFilter(arg: boolean) {
+    //     return this.employeeRepository.findByFilter(arg);
+    // }
     constructor(private employeeRepository: EmployeeRepository,
         private departmentService: DepartmentService) { }
 
-    getAllEmployees(): Promise<Employee[]> {
-        return this.employeeRepository.find();
+    getAllEmployees(params) {
+        let pageSize = 2;
+        let page = 0;
+        if (params) {
+            if (params.pageSize) pageSize = +params.pageSize;
+            if (params.page) page = +params.page;
+        }
+        return { "employeePromise": this.employeeRepository.find(page * pageSize, pageSize), "page": page + 1, "pageSize": pageSize };
+    }
+
+    getEmployeeCount(): Promise<number> {
+        return this.employeeRepository.countEmployee();
     }
 
     async getEmployeeByID(id: string): Promise<Employee | null> {

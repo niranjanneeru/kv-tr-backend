@@ -4,12 +4,15 @@ import Employee from "../entity/employee.entity";
 class EmployeeRepository {
     constructor(private repository: Repository<Employee>) { }
 
-    find(): Promise<Employee[]> {
+    find(skip, take): Promise<Employee[]> {
         // return this.repository.find();
         return this.repository
             .createQueryBuilder('employee')
             .leftJoinAndSelect('employee.department', 'department')
             .addSelect('employee.departmentId')
+            .orderBy("employee.createdAt")
+            .skip(skip)
+            .take(take)
             .getMany();
     }
 
@@ -21,6 +24,10 @@ class EmployeeRepository {
                 department: true
             }
         });
+    }
+
+    countEmployee(): Promise<number> {
+        return this.repository.count();
     }
 
     findEmployeeByEmail(email: string): Promise<Employee> {
@@ -41,10 +48,9 @@ class EmployeeRepository {
         return this.repository.softRemove(employee);
     }
 
-    findByFilter(params: any[]): Promise<Employee[]> {
+    findByFilter(params: boolean): Promise<Employee[]> {
         return this.repository.createQueryBuilder()
-            .where('name LIKE :name', { name: `${params[0] || ""}%` })
-            .andWhere('email LIKE :email', { email: `%${params[1] || ""}%` })
+            .where('is_active = :status', { status: params })
             .getMany()
     }
 }
