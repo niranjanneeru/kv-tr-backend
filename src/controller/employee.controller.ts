@@ -28,8 +28,8 @@ class EmployeeController {
         this.router.get("/", authenticate, this.getAllEmployees);
         this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), validateMiddleware(CreateEmployeeDto), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
-        this.router.put("/:id", authenticate, validateMiddleware(EditAddressDto), this.editEmployee);
-        this.router.patch("/:id", authenticate, validateMiddleware(PatchDepartmentDto, { skipMissingProperties: true }), this.setFieldEmployee);
+        this.router.put("/:id", authenticate, validateMiddleware(EditEmployeeDto), this.editEmployee);
+        this.router.patch("/:id", authenticate, validateMiddleware(SetEmployeeDto, { skipMissingProperties: true }), this.setFieldEmployee);
         this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeEmployee);
         this.router.post("/login", validateMiddleware(LoginEmployeeDto), this.loginEmployee);
     }
@@ -65,8 +65,7 @@ class EmployeeController {
     // TODO Change Dept -> Dept.id
     createEmployee = async (req: RequestWithLogger, res: Response, next) => {
         try {
-            const createEmployeeDto = plainToInstance(CreateEmployeeDto, req.body);
-            const employee = await this.employeeService.createEmployee(createEmployeeDto);
+            const employee = await this.employeeService.createEmployee(req.dto);
             const responseBody = new ResponseBody(employee, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
             res.status(StatusCodes.CREATED).send(responseBody);
@@ -76,11 +75,10 @@ class EmployeeController {
         }
     }
 
-    editEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    editEmployee = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         let employeeId = req.params.id;
         try {
-            const editEmployeeDto = plainToInstance(EditEmployeeDto, req.body);
-            const employee = await this.employeeService.editEmployee(employeeId, editEmployeeDto);
+            const employee = await this.employeeService.editEmployee(employeeId, req.dto);
             const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
             responseBody.set_meta(1);
             res.status(StatusCodes.OK).send(responseBody);
@@ -89,11 +87,10 @@ class EmployeeController {
         }
     }
 
-    setFieldEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    setFieldEmployee = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         let employeeId = req.params.id;
         try {
-            const setEmployeeDto = plainToInstance(SetEmployeeDto, req.body);
-            const employee = await this.employeeService.editEmployee(employeeId, setEmployeeDto as EditEmployeeDto);
+            const employee = await this.employeeService.editEmployee(employeeId, req.dto);
             const responseBody = new ResponseBody(employee, null, StatusMessages.OK);
             responseBody.set_meta(1);
             res.status(StatusCodes.OK).send(responseBody);
@@ -113,10 +110,9 @@ class EmployeeController {
         }
     }
 
-    loginEmployee = async (req: Request, res: Response, next: NextFunction) => {
-        const loginEmployeeDto = plainToInstance(LoginEmployeeDto, req.body);
+    loginEmployee = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
-            const data = await this.employeeService.loginEmployee(loginEmployeeDto);
+            const data = await this.employeeService.loginEmployee(req.dto);
             const responseBody = new ResponseBody(data, null, StatusMessages.OK);
             responseBody.set_meta(1);
             res.status(StatusCodes.OK).send(responseBody);

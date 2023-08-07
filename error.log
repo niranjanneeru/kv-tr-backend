@@ -1,2 +1,6 @@
 2023-08-05T16:48:26.255Z [d92002f6-66e8-44a1-b619-4fabd26f192b] error: invalid input syntax for type integer: "NaN"
 2023-08-06T18:30:23.346Z [d92002f6-66e8-44a1-b619-4fabd26f1234] error: duplicate key value violates unique constraint "IDX_817d1d427138772d47eca04885"
+2023-08-07T07:26:46.662Z [e2a00829-2bf4-4ad8-b05c-0e6634efce34] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:26:49.816Z [1a8abf9f-7e38-48ed-81a5-da21d242539a] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:09.319Z [d90b14f8-97d3-4bfc-8764-afad4e0b23a9] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:10.292Z [a6d24d86-e2b7-4e7a-ba2a-83683a600559] error: null value in column "address_line1" of relation "address" violates not-null constraint

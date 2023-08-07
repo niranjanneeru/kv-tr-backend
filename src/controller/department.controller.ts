@@ -51,8 +51,7 @@ class DepartmentController {
 
     createDepartment = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
-            const createDepartmentDto = plainToInstance(CreateDepartmentDto, req.body);
-            const department = await this.departmentService.createDepartment(createDepartmentDto);
+            const department = await this.departmentService.createDepartment(req.dto);
             const responseBody = new ResponseBody(department, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
             res.status(StatusCodes.CREATED).send(responseBody);
@@ -62,11 +61,10 @@ class DepartmentController {
         }
     }
 
-    editDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    editDepartment = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
             const deptId = +req.params.id;
-            const editDepartmentDto = plainToInstance(EditDepartmentDto, req.body);
-            const department = await this.departmentService.editDepartment(deptId, editDepartmentDto);
+            const department = await this.departmentService.editDepartment(deptId, req.dto);
             const responseBody = new ResponseBody(department, null, StatusMessages.OK);
             responseBody.set_meta(1);
             res.status(StatusCodes.OK).send(responseBody);
@@ -75,11 +73,10 @@ class DepartmentController {
         }
     }
 
-    setDepartment = async (req: Request, res: Response, next: NextFunction) => {
+    setDepartment = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
             const deptId = +req.params.id;
-            const patchDepartmentDto = plainToInstance(PatchDepartmentDto, req.body);
-            const department = await this.departmentService.editDepartment(deptId, patchDepartmentDto);
+            const department = await this.departmentService.editDepartment(deptId, req.dto);
             const responseBody = new ResponseBody(department, null, StatusMessages.OK);
             responseBody.set_meta(1);
             res.status(StatusCodes.OK).send(responseBody);

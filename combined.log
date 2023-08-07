@@ -257,3 +257,46 @@
 2023-08-07T06:12:31.762Z [8aae3712-e509-445a-b0a2-18f280c6f258] info: Employee already exist
 2023-08-07T06:13:54.940Z [ee631a68-e1a2-4158-9d46-996842add6e2] info: POST - /api/employees
 2023-08-07T06:13:54.946Z [ee631a68-e1a2-4158-9d46-996842add6e2] info: emily.williams@example.com Logged In
+2023-08-07T06:55:17.765Z [41ae64ef-c5dc-4e68-818e-0d598646c6b1] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T06:55:17.771Z [41ae64ef-c5dc-4e68-818e-0d598646c6b1] info: emily.williams@example.com Logged In
+2023-08-07T06:55:24.491Z [dd8b23f0-397c-485c-911b-9d33b4ae4975] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T06:55:24.493Z [dd8b23f0-397c-485c-911b-9d33b4ae4975] info: emily.williams@example.com Logged In
+2023-08-07T07:26:46.613Z [e2a00829-2bf4-4ad8-b05c-0e6634efce34] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:26:46.618Z [e2a00829-2bf4-4ad8-b05c-0e6634efce34] info: emily.williams@example.com Logged In
+2023-08-07T07:26:46.662Z [e2a00829-2bf4-4ad8-b05c-0e6634efce34] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:26:49.803Z [1a8abf9f-7e38-48ed-81a5-da21d242539a] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:26:49.805Z [1a8abf9f-7e38-48ed-81a5-da21d242539a] info: emily.williams@example.com Logged In
+2023-08-07T07:26:49.816Z [1a8abf9f-7e38-48ed-81a5-da21d242539a] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:09.293Z [d90b14f8-97d3-4bfc-8764-afad4e0b23a9] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:28:09.295Z [d90b14f8-97d3-4bfc-8764-afad4e0b23a9] info: emily.williams@example.com Logged In
+2023-08-07T07:28:09.319Z [d90b14f8-97d3-4bfc-8764-afad4e0b23a9] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:10.280Z [a6d24d86-e2b7-4e7a-ba2a-83683a600559] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:28:10.282Z [a6d24d86-e2b7-4e7a-ba2a-83683a600559] info: emily.williams@example.com Logged In
+2023-08-07T07:28:10.292Z [a6d24d86-e2b7-4e7a-ba2a-83683a600559] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:56.213Z [57852c32-86bd-4808-9cc1-f0d0d51a8f6f] info: PUT - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:28:56.215Z [57852c32-86bd-4808-9cc1-f0d0d51a8f6f] info: emily.williams@example.com Logged In
+2023-08-07T07:29:43.430Z [78773222-9737-46b7-9f0c-fcf9432edfa4] info: POST - /api/employees
+2023-08-07T07:29:43.431Z [78773222-9737-46b7-9f0c-fcf9432edfa4] info: emily.williams@example.com Logged In
+2023-08-07T07:29:48.177Z [0ce09ab3-b41f-478a-8320-29b8e70b0cb6] info: POST - /api/employees
+2023-08-07T07:29:48.179Z [0ce09ab3-b41f-478a-8320-29b8e70b0cb6] info: emily.williams@example.com Logged In
+2023-08-07T07:29:48.196Z [0ce09ab3-b41f-478a-8320-29b8e70b0cb6] info: Employee already exist
+2023-08-07T07:29:54.848Z [f150fc4e-9dcb-43ec-9752-14d9a7c9ae6d] info: POST - /api/employees/login
+2023-08-07T07:29:59.995Z [f64925ae-4484-4da8-bce8-088c5b45a539] info: PUT - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:29:59.996Z [f64925ae-4484-4da8-bce8-088c5b45a539] info: emily.williams@example.com Logged In
+2023-08-07T07:33:19.254Z [fbfb00f0-deaf-4457-8e28-b6ca1d5c10e2] info: PUT - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:33:19.259Z [fbfb00f0-deaf-4457-8e28-b6ca1d5c10e2] info: emily.williams@example.com Logged In
+2023-08-07T07:33:22.877Z [2e0793cc-60a3-4b28-a0d3-a4d077db2f0b] info: PUT - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:33:22.879Z [2e0793cc-60a3-4b28-a0d3-a4d077db2f0b] info: emily.williams@example.com Logged In
+2023-08-07T07:33:32.015Z [21ae2488-2d5d-4042-a3e6-d359a51ff7a3] info: PUT - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:33:32.017Z [21ae2488-2d5d-4042-a3e6-d359a51ff7a3] info: emily.williams@example.com Logged In
+2023-08-07T07:33:40.013Z [f90ba603-6ee0-471b-9282-6a136eadefd5] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:33:40.014Z [f90ba603-6ee0-471b-9282-6a136eadefd5] info: emily.williams@example.com Logged In
+2023-08-07T07:33:43.432Z [3fb5401f-fef1-43c6-887b-0aae14e600c5] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:33:43.434Z [3fb5401f-fef1-43c6-887b-0aae14e600c5] info: emily.williams@example.com Logged In
+2023-08-07T07:33:48.726Z [c9f8aea3-ed80-4cb3-a7f3-2b5ffacf39aa] info: PATCH - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-07T07:33:48.727Z [c9f8aea3-ed80-4cb3-a7f3-2b5ffacf39aa] info: emily.williams@example.com Logged In
+2023-08-07T07:33:57.950Z [42b1c791-1c22-402b-baad-6c755492dddb] info: PUT - /api/departments/1
+2023-08-07T07:33:57.951Z [42b1c791-1c22-402b-baad-6c755492dddb] info: emily.williams@example.com Logged In
+2023-08-07T07:34:04.658Z [b0e7e85c-1581-4e42-8354-7400b0c81dc1] info: PATCH - /api/departments/1
+2023-08-07T07:34:04.659Z [b0e7e85c-1581-4e42-8354-7400b0c81dc1] info: emily.williams@example.com Logged In
+2023-08-07T07:37:05.800Z [a9b91528-8322-4e33-af43-4df126bd935c] info: GET - /api/departments

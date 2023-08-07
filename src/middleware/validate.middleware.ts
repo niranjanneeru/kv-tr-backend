@@ -12,6 +12,7 @@ const validateMiddleware = (cls, options = {}) => {
             if (errors.length > 0) {
                 throw new ValidationException(400, "Validation Errors", errors);
             }
+            req.dto = dto;
             next();
         } catch (error) {
             next(error);
