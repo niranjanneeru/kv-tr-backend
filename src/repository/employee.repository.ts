@@ -31,9 +31,11 @@ class EmployeeRepository {
     }
 
     findEmployeeByEmail(email: string): Promise<Employee> {
-        return this.repository.findOne({
-            where: { email }
-        });
+        return this.repository
+            .createQueryBuilder('employee')
+            .addSelect('employee.password')
+            .where('email = :email', { email })
+            .getOne();
     }
 
     createEmployee(employee: Employee): Promise<Employee> {

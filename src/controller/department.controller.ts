@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import DepartmentService from "../service/department.service";
 import { NextFunction } from "express-serve-static-core";
-import { plainToInstance } from "class-transformer";
 import CreateDepartmentDto from "../dto/create.department.dto";
 import authenticate from "../middleware/authenticate.middleware";
 import authorize from "../middleware/authorize.middleware";

@@ -1,8 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
 import EmployeeService from "../service/employee.service";
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import ValidationException from "../exception/validation.exception";
 import ResponseBody from "../utils/response.body";
 import EditEmployeeDto from "../dto/edit-employee.dto";
 import SetEmployeeDto from "../dto/patch-employee.dto";
@@ -16,8 +13,6 @@ import { StatusCodes } from "../utils/status.code.enum";
 import RequestWithLogger from "../utils/request.logger";
 import Logger from "../logger/logger.singleton";
 import validateMiddleware from "../middleware/validate.middleware";
-import EditAddressDto from "../dto/edit-address.dto";
-import PatchDepartmentDto from "../dto/patch.department";
 
 class EmployeeController {
     public router: Router;
@@ -31,7 +26,7 @@ class EmployeeController {
         this.router.put("/:id", authenticate, validateMiddleware(EditEmployeeDto), this.editEmployee);
         this.router.patch("/:id", authenticate, validateMiddleware(SetEmployeeDto, { skipMissingProperties: true }), this.setFieldEmployee);
         this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeEmployee);
-        this.router.post("/login", validateMiddleware(LoginEmployeeDto), this.loginEmployee);
+        this.router.post("/login", validateMiddleware(LoginEmployeeDto, { forbidUnknownValues: false }), this.loginEmployee);
     }
 
     // TODO Change Dept -> Dept.id

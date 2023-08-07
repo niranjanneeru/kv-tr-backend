@@ -24,7 +24,7 @@
         "@types/winston": "^2.4.4",
         "bcrypt": "^5.1.0",
         "class-transformer": "^0.5.1",
-        "class-validator": "^0.14.0",
+        "class-validator": "^0.13.2",
         "dotenv": "^16.3.1",
         "express": "^4.17.1",
         "jest-when": "^3.5.2",

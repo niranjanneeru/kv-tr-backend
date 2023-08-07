@@ -4,3 +4,4 @@
 2023-08-07T07:26:49.816Z [1a8abf9f-7e38-48ed-81a5-da21d242539a] error: null value in column "address_line1" of relation "address" violates not-null constraint
 2023-08-07T07:28:09.319Z [d90b14f8-97d3-4bfc-8764-afad4e0b23a9] error: null value in column "address_line1" of relation "address" violates not-null constraint
 2023-08-07T07:28:10.292Z [a6d24d86-e2b7-4e7a-ba2a-83683a600559] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T08:40:27.445Z [16c82a39-d4b0-493d-ab00-eac1ab0fcc71] error: data and hash arguments required

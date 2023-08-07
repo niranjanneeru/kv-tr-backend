@@ -3,6 +3,7 @@ import Address from './address.entity';
 import Department from './department.entity';
 import AbstractEntity from './abstract.enitiy';
 import { Role } from '../utils/role.enum';
+import { Exclude, instanceToPlain } from 'class-transformer';
 
 @Entity()
 @Index(["email"], { unique: true })
@@ -28,10 +29,11 @@ export default class Employee extends AbstractEntity {
     department: Department;
 
     @Column()
-    departmentId : number;
+    departmentId: number;
 
 
     @Column()
+    @Exclude({ toPlainOnly: true })
     password: string;
 
     @Column({ default: Role.DEVELOPER })
@@ -45,4 +47,8 @@ export default class Employee extends AbstractEntity {
 
     @Column()
     experience: number
+
+    toJSON(){
+        return instanceToPlain(this);
+    }
 }

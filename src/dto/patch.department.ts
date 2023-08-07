@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, ValidateIf } from "class-validator";
 
 class PatchDepartmentDto{
     @IsNotEmpty()

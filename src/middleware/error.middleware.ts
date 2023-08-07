@@ -14,7 +14,7 @@ const errorMiddleware = (error: Error, req: RequestWithLogger, res: Response, ne
         if (error instanceof ValidationException) {
             const responseBody = new ResponseBody(null, error.getMessage(), error.message);
             responseBody.set_meta(0);
-            res.status(error.status).send(responseBody);
+            res.status(StatusCodes.BAD_REQUEST).send(responseBody);
             return;
         }
         if (error instanceof HttpException) {
