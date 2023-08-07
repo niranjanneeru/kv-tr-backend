@@ -42,13 +42,13 @@ export default class Employee extends AbstractEntity {
     @Column()
     joiningDate: string;
 
-    @Column({ default: true })
+    @Column({ nullable: true })
     isActive: boolean;
 
     @Column()
     experience: number
 
-    toJSON(){
+    toJSON() {
         return instanceToPlain(this);
     }
 }
