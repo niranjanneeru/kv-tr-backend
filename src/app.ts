@@ -1,13 +1,13 @@
 import * as dotenv from "dotenv";
 import get_path from "./utils/path";
-dotenv.config({path: get_path()+'/.env'});
+dotenv.config({ path: get_path() + '/.env' });
 import "reflect-metadata"
 import express, { NextFunction, Request, Response } from "express"
 import dataSource from "./db/postgres.db";
 import loggerMiddleware from "./middleware/logger.middleware";
 import employeeRoute from "./route/employee.route";
 import errorMiddleware from "./middleware/error.middleware";
-import departmentRoute from "./route/department.route";
+import { departmentRoute } from "./route/department.route";
 import roleRoute from "./route/role.route";
 import monitor from "./middleware/monitor.middleware";
 
@@ -29,4 +29,4 @@ server.all('*', (req: Request, res: Response) => {
 
 server.use(errorMiddleware);
 
-(async () => { await dataSource.initialize(); server.listen(3000);})();
+(async () => { await dataSource.initialize(); server.listen(3000); })();
