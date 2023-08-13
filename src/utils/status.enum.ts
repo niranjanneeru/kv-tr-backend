@@ -1,5 +1,6 @@
 export enum Status {
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
-    PROBATION = "PROBATION"
+    PROBATION = "PROBATION",
+    TERMINATED = "TERMINATED"
 }

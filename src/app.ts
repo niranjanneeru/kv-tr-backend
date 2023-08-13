@@ -10,6 +10,7 @@ import errorMiddleware from "./middleware/error.middleware";
 import { departmentRoute } from "./route/department.route";
 import roleRoute from "./route/role.route";
 import monitor from "./middleware/monitor.middleware";
+import statusRoute from "./route/status.route";
 
 const server = express();
 
@@ -22,6 +23,7 @@ server.use(loggerMiddleware);
 server.use('/api/employees', employeeRoute);
 server.use('/api/departments', departmentRoute);
 server.use('/api/roles', roleRoute);
+server.use('/api/status', statusRoute);
 
 server.all('*', (req: Request, res: Response) => {
     res.status(404).send();
@@ -29,4 +31,4 @@ server.all('*', (req: Request, res: Response) => {
 
 server.use(errorMiddleware);
 
-(async () => { await dataSource.initialize(); server.listen(3000); })();
+(async () => { await dataSource.initialize(); server.listen(8000); })();

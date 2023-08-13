@@ -4,6 +4,7 @@ import Department from './department.entity';
 import AbstractEntity from './abstract.enitiy';
 import { Role } from '../utils/role.enum';
 import { Exclude, instanceToPlain } from 'class-transformer';
+import { Status } from '../utils/status.enum';
 
 @Entity()
 @Index(["email"], { unique: true })
@@ -42,8 +43,8 @@ export default class Employee extends AbstractEntity {
     @Column()
     joiningDate: string;
 
-    @Column({ nullable: true })
-    isActive: boolean;
+    @Column({ default: Status.ACTIVE })
+    status: Status;
 
     @Column()
     experience: number

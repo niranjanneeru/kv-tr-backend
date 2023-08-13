@@ -366,3 +366,16 @@
 2023-08-07T09:21:02.656Z [f4e7c919-dd1a-4137-ba1b-4142f20419cd] info: POST - /api/employees
 2023-08-07T09:21:02.657Z [f4e7c919-dd1a-4137-ba1b-4142f20419cd] info: emily.williams@example.com Logged In
 2023-08-07T09:21:02.732Z [f4e7c919-dd1a-4137-ba1b-4142f20419cd] info: Employee Created (dfe56800-54a2-42a3-93e0-0fb167ff1596)
+2023-08-11T05:10:23.398Z [e0b26c98-e3ba-4001-9784-a36946be90bb] info: GET - /api/employees
+2023-08-11T05:10:23.408Z [e0b26c98-e3ba-4001-9784-a36946be90bb] info: jwt expired
+2023-08-11T05:10:28.579Z [8ef41d08-df15-4108-a3ca-1a51155154de] info: POST - /api/employees/login
+2023-08-11T05:10:48.341Z [e71888c1-bbf9-4146-803a-dae3a0878711] info: GET - /api/employees
+2023-08-11T05:10:48.342Z [e71888c1-bbf9-4146-803a-dae3a0878711] info: emily.williams@example.com Logged In
+2023-08-11T09:25:01.216Z [0adb44ee-5ee1-42df-9a34-a3e86d658853] info: GET - /api/employees/8f257891-076d-413e-9c68-da6e7c0f394b
+2023-08-11T09:25:01.222Z [0adb44ee-5ee1-42df-9a34-a3e86d658853] info: emily.williams@example.com Logged In
+2023-08-11T11:43:43.231Z [ee82617d-e63f-4a7c-8509-35570155207f] info: GET - /api/departments
+2023-08-11T11:43:44.132Z [a20f9105-e00e-48a8-baf7-6e27ee080bb6] info: GET - /api/departments
+2023-08-11T12:01:32.075Z [b0dd6e2f-01f4-415a-a6e0-1d5ca0c35ced] info: GET - /api/roles
+2023-08-11T12:01:32.689Z [07e0174f-a2f3-4e54-9902-5ec754c4631e] info: GET - /api/roles
+2023-08-12T14:16:49.518Z [c59242e6-f030-47e1-aecb-ad11ccca159f] info: GET - /api/employees
+2023-08-12T14:16:49.522Z [c59242e6-f030-47e1-aecb-ad11ccca159f] info: emily.williams@example.com Logged In
