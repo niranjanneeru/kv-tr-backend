@@ -13,6 +13,7 @@ import { StatusCodes } from "../utils/status.code.enum";
 import RequestWithLogger from "../utils/request.logger";
 import Logger from "../logger/logger.singleton";
 import validateMiddleware from "../middleware/validate.middleware";
+import RequestWithUser from "../utils/request.user";
 
 class EmployeeController {
     public router: Router;
@@ -21,12 +22,18 @@ class EmployeeController {
         this.router = Router();
 
         this.router.get("/", authenticate, this.getAllEmployees);
+        this.router.get("/me", authenticate, this.getLoggedEmployee);
         this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), validateMiddleware(CreateEmployeeDto), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
         this.router.put("/:id", authenticate, validateMiddleware(EditEmployeeDto), this.editEmployee);
         this.router.patch("/:id", authenticate, validateMiddleware(SetEmployeeDto, { skipMissingProperties: true }), this.setFieldEmployee);
         this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeEmployee);
         this.router.post("/login", validateMiddleware(LoginEmployeeDto, { forbidUnknownValues: false }), this.loginEmployee);
+    }
+
+    getLoggedEmployee = async (req: RequestWithUser, res: Response) => {
+        const responseBody = new ResponseBody({name:req.name, email: req.email, role:req.role}, null, StatusMessages.OK);
+        res.status(StatusCodes.OK).send(responseBody);
     }
 
     // TODO Change Dept -> Dept.id

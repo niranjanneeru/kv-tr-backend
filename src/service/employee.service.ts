@@ -22,7 +22,7 @@ class EmployeeService {
         private departmentService: DepartmentService) { }
 
     getAllEmployees(params) {
-        let pageSize = 2;
+        let pageSize = 10;
         let page = 0;
         if (params) {
             if (params.pageSize) pageSize = +params.pageSize;

@@ -11,8 +11,11 @@ import { departmentRoute } from "./route/department.route";
 import roleRoute from "./route/role.route";
 import monitor from "./middleware/monitor.middleware";
 import statusRoute from "./route/status.route";
+import cors from "cors";
 
 const server = express();
+
+server.use(cors())
 
 server.use(monitor);
 
