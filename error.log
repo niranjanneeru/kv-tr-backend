@@ -1,0 +1,17 @@
+2023-08-05T16:48:26.255Z [d92002f6-66e8-44a1-b619-4fabd26f192b] error: invalid input syntax for type integer: "NaN"
+2023-08-06T18:30:23.346Z [d92002f6-66e8-44a1-b619-4fabd26f1234] error: duplicate key value violates unique constraint "IDX_817d1d427138772d47eca04885"
+2023-08-07T07:26:46.662Z [e2a00829-2bf4-4ad8-b05c-0e6634efce34] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:26:49.816Z [1a8abf9f-7e38-48ed-81a5-da21d242539a] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:09.319Z [d90b14f8-97d3-4bfc-8764-afad4e0b23a9] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T07:28:10.292Z [a6d24d86-e2b7-4e7a-ba2a-83683a600559] error: null value in column "address_line1" of relation "address" violates not-null constraint
+2023-08-07T08:40:27.445Z [16c82a39-d4b0-493d-ab00-eac1ab0fcc71] error: data and hash arguments required
+2023-08-17T05:56:02.298Z [32d924f5-055d-4658-b588-49910472b8f4] error: duplicate key value violates unique constraint "IDX_817d1d427138772d47eca04885"
+2023-08-17T08:26:35.548Z [f7cd9cd1-6c0c-48a3-82fd-441a826d0a37] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:34:32.631Z [97ddb629-59fb-4b38-a7bd-845a6dd13ecd] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:36:32.161Z [0b5804d6-e2a1-45bd-863e-4c4644ebddd5] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:36:34.099Z [df6168d9-b9a8-4e2e-af04-5460ab58dbf8] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f39"
+2023-08-17T08:37:54.538Z [4185ae60-84f8-40c9-b86b-87b12f32e0fa] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:39:27.624Z [fad51ea0-b443-41a3-a239-62a62465d466] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:39:30.604Z [fdf98a31-e9b5-4f48-b0e7-e68408c6a2bf] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:39:31.687Z [da1da31d-acc5-4917-9eed-858fb73c9fc3] error: invalid input syntax for type uuid: "8f257891-076d-413e-9c68-da6e7c0f394"
+2023-08-17T08:39:40.226Z [dd373ba4-ea29-4c4b-af9e-56768880028f] error: invalid input syntax for type uuid: "ee81eb3d-9d84-479e-9029-dbcb1b319a1"
